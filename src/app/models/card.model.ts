@@ -1,0 +1,15 @@
+import { Color } from '../enums/color.enum';
+import { CardType } from '../enums/card-type.enum';
+
+export interface Card {
+  name: string;
+  value: number;
+  type: CardType;
+  description?: string;
+  property?: Property[];
+}
+
+export interface Property {
+  color: Color;
+  rents: number[];
+}
