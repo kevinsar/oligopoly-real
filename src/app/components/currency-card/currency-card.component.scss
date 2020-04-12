@@ -1,0 +1,19 @@
+.card-container {
+  &.currency-card-container {
+    .currency-card-container-hero {
+      text-align: center;
+      transform: translate(-50%, -50%) rotate(90deg);
+      top: 50%;
+      position: absolute;
+      left: 50%;
+
+      span {
+        font-size: 80px;
+        text-align: center;
+        border: 5px solid black;
+        border-radius: 50%;
+        padding: 30px;
+      }
+    }
+  }
+}

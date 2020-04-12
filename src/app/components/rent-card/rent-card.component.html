@@ -1,0 +1,20 @@
+<div class="card-container rent-card-container">
+  <div class="card-value">${{ value }}</div>
+
+  <h3 class="action-card-title">Action Card</h3>
+
+  <div class="rent-container rent-container-basic {{ rentColors[0] }}-{{ rentColors[1] }}" [class.rent-container-rainbow]="rentColors.length > 2">
+    <div class="currency-card-container-hero">
+      <span>{{ name }}</span>
+    </div>
+  </div>
+
+  <p class="description" *ngIf="rentColors.length === 2">
+    All players pay you rent for properties you own in one of these colors.
+  </p>
+  <p class="description" *ngIf="rentColors.length > 2">
+    One player pays you rent for any colored property you own.
+  </p>
+
+  <div class="card-value card-value-bottom">${{ value }}</div>
+</div>

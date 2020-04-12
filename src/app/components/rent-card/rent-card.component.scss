@@ -1,0 +1,70 @@
+@import '../../../assets/styles/colors';
+
+.rent-card-container {
+  background: #bac2b2;
+
+  .rent-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 42.5px auto 0 auto;
+    border: 5px solid black;
+
+    &.blue-green {
+      background: $or-green linear-gradient(to bottom, transparent 50%, $or-blue 0);
+    }
+
+    &.brown-light-blue {
+      background: $or-brown linear-gradient(to bottom, transparent 50%, $or-light-blue 0);
+    }
+
+    &.purple-orange {
+      background: $or-purple linear-gradient(to bottom, transparent 50%, $or-orange 0);
+    }
+
+    &.black-light-green {
+      background: $or-black linear-gradient(to bottom, transparent 50%, $or-light-green 0);
+    }
+
+    &.red-yellow {
+      background: $or-red linear-gradient(to bottom, transparent 50%, $or-yellow 0);
+    }
+
+    &.rent-container-rainbow {
+      background: linear-gradient(
+        to right,
+        $or-red,
+        $or-orange,
+        $or-yellow,
+        $or-green,
+        $or-light-green,
+        $or-light-blue,
+        $or-blue,
+        $or-purple,
+        $or-brown,
+        $or-black
+      );
+    }
+  }
+
+  .currency-card-container-hero {
+    background: $or-text-white;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    line-height: 100px;
+    margin: 25px auto 0 auto;
+
+    span {
+      font-weight: 500;
+      font-size: 32px;
+    }
+  }
+
+  p.description {
+    text-align: center;
+    padding: 0 15px;
+    font-size: 14px;
+  }
+}

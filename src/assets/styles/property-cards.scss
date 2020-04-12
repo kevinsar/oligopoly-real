@@ -1,0 +1,65 @@
+.card-container.property-card-container {
+  .property-title-container {
+    color: $or-text-black;
+    font-size: 16px;
+    padding: 20px 0;
+    border: 1px solid $or-text-black;
+    text-align: center;
+    margin: 10px;
+
+    &-brown {
+      background: $or-brown;
+    }
+
+    &-blue {
+      background: $or-blue;
+    }
+
+    &-green {
+      background: $or-green;
+    }
+
+    &-light-blue {
+      background: $or-light-blue;
+    }
+
+    &-orange {
+      background: $or-orange;
+    }
+
+    &-purple {
+      background: $or-purple;
+    }
+
+    &-black {
+      background: $or-black;
+      color: $or-text-white;
+    }
+
+    &-red {
+      background: $or-red;
+    }
+
+    &-light-green {
+      background: $or-light-green;
+    }
+
+    &-yellow {
+      background: $or-yellow;
+    }
+
+    span {
+      font-weight: 700;
+    }
+  }
+
+  .property-rent-container {
+    ul {
+      list-style: none;
+
+      li {
+        margin: 25px 0;
+      }
+    }
+  }
+}

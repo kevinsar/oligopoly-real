@@ -1,0 +1,34 @@
+@import '../../../assets/styles/colors';
+
+.action-card-container {
+  .action-card-container-hero {
+    width: 150px;
+    height: 150px;
+    border: 5px solid black;
+    margin: 0 auto;
+    border-radius: 50%;
+    text-align: center;
+    position: relative;
+    margin-top: 42.5px;
+    background: $or-text-white;
+
+    span {
+      display: block;
+      text-align: center;
+      font-size: 30px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      width: 100%;
+    }
+  }
+
+  .card-container-decription {
+    p {
+      font-size: 14px;
+      text-align: center;
+      padding: 0 25px;
+    }
+  }
+}

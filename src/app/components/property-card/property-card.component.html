@@ -1,0 +1,13 @@
+<div class="card-container property-card-container">
+  <div class="card-value">${{ value }}</div>
+
+  <div class="property-title-container {{ propertyClass }}">
+    <span>{{ name }}</span>
+  </div>
+
+  <div class="property-rent-container">
+    <ul>
+      <li *ngFor="let rent of properties[0].rents; let i = index">{{ i + 1 }} Property = ${{ rent }} Rent</li>
+    </ul>
+  </div>
+</div>
