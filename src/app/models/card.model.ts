@@ -8,6 +8,7 @@ export interface Card {
   type: CardType;
   description?: string;
   property?: Property[];
+  primaryProperty?: Property;
   rentColors?: Color[];
 }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { deck } from '../data/deck';
-import { Card } from '../models/card.model';
+import { Card, Property } from '../models/card.model';
 import { Player } from '../models/player.model';
 import { GameState } from '../models/game-state.model';
 import { BehaviorSubject } from 'rxjs';
@@ -17,7 +17,7 @@ export class GameStateService {
   gameStateSubject = new BehaviorSubject<GameState>(this.gameState);
   gameStateObserver = this.gameStateSubject.asObservable();
 
-  constructor() { }
+  constructor() {}
 
   getGameState() {
     return this.gameStateObserver;
@@ -51,7 +51,7 @@ export class GameStateService {
       return handCard.id !== card.id;
     });
   }
-  
+
   addToPlayed(playerId: number, card: Card) {
     this.addToTrash(playerId, card);
   }
@@ -69,6 +69,8 @@ export class GameStateService {
   }
 
   buildProperty(playerId: number, card: Card, lot = 0) {
+    console.log(playerId, card, lot);
+    debugger;
     const currentPlayer = this.gameState.players.find((player: Player) => {
       return player.id === playerId;
     });
@@ -78,19 +80,15 @@ export class GameStateService {
     currentPlayer.hand = currentPlayer.hand.filter((handCard: Card) => {
       return handCard.id !== card.id;
     });
-    this.gameStateSubject.next(this.gameState);
-  }
 
-  flipWildCard(playerId: number, card: Card) {
-    const currentPlayer = this.gameState.players.find((player: Player) => {
-      return player.id === playerId;
-    });
+    const addNewLot =
+      currentPlayer.land.filter((currentLot: Card[]) => {
+        return currentLot.length === 0;
+      }).length === 0;
 
-    const cardToFlip = currentPlayer.hand.find((handCard: Card) => {
-      return handCard.id === card.id;
-    });
-
-    cardToFlip.property = cardToFlip.property.reverse();
+    if (addNewLot) {
+      currentPlayer.land.push([]);
+    }
     this.gameStateSubject.next(this.gameState);
   }
 
@@ -105,5 +103,24 @@ export class GameStateService {
 
     this.gameStateSubject.next(this.gameState);
     console.log(playerId, amount);
+  }
+
+  setWildCardColor(playerId: number, card: Card, property: Property) {
+    const currentPlayer = this.gameState.players.find((player: Player) => {
+      return player.id === playerId;
+    });
+
+    const cardToUpdate = currentPlayer.hand.find((handCard: Card) => {
+      return handCard.id === card.id;
+    });
+
+    cardToUpdate.property.sort((a: Property, b: Property) => {
+      if (a.color === property.color) {
+        return -1;
+      }
+
+      return 1;
+    });
+    this.gameStateSubject.next(this.gameState);
   }
 }

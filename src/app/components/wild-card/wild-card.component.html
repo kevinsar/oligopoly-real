@@ -1,15 +1,18 @@
-<div class="card-container property-card-container wild-card-container" (dblclick)="flipCard()">
+<div class="card-container property-card-container wild-card-container">
   <or-card-actions
     [cardType]="cardType"
     [cardLocation]="cardLocation"
     [properties]="properties"
+    [lots]="lots"
     (cardAction)="emitCardAction($event)"
+    (setColor)="setPrimaryProperty($event)"
+    (setProperty)="setPropertyHandler($event)"
   >
   </or-card-actions>
   <div class="card-value">${{ value }}</div>
 
   <div class="property-title-container {{ propertyClass }}">
-    <span>Wild Card</span>
+    <span>Wild Card - {{ properties[0].color }}</span>
   </div>
 
   <div class="property-rent-container">

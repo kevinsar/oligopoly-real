@@ -6,21 +6,27 @@ import { CardType } from 'src/app/enums/card-type.enum';
 @Component({
   selector: 'or-action-card',
   templateUrl: './action-card.component.html',
-  styleUrls: ['./action-card.component.scss'],
+  styleUrls: ['./action-card.component.scss']
 })
 export class ActionCardComponent implements OnInit {
   @Input() name: string;
   @Input() value: number;
   @Input() description: string;
+  @Input() lots: number;
   @Input() cardLocation: CardLocation;
   @Output() cardAction: EventEmitter<CardAction> = new EventEmitter<CardAction>();
+  @Output() setProperty: EventEmitter<number> = new EventEmitter<number>();
   cardType: CardType = CardType.ACTION;
 
   constructor() {}
 
   ngOnInit(): void {}
-  
+
   emitCardAction(action: CardAction) {
     this.cardAction.emit(action);
+  }
+
+  setPropertyHandler(lotNumber: number) {
+    this.setProperty.emit(lotNumber);
   }
 }

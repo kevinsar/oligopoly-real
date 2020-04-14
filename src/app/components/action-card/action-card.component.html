@@ -1,8 +1,10 @@
 <div class="card-container action-card-container currency-card-container-{{ value }}">
   <or-card-actions
-    [cardType]="cardType"
     [cardLocation]="cardLocation"
+    [cardType]="cardType"
+    [lots]="lots"
     (cardAction)="emitCardAction($event)"
+    (setProperty)="setPropertyHandler($event)"
   >
   </or-card-actions>
   <div class="card-value">${{ value }}</div>
@@ -13,7 +15,7 @@
     <span>{{ name }}</span>
   </div>
 
-  <div class="card-container-decription">
+  <div class="card-container-description">
     <p>{{ description }}</p>
   </div>
 

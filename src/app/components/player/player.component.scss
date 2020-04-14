@@ -1,15 +1,58 @@
-.hand-container {
+.land-container {
   width: 100%;
-  overflow: auto;
-  
+  overflow: hidden;
+
   &-scroller {
     white-space: nowrap;
-    
+
+    .land {
+      display: inline-block;
+      white-space: initial;
+      width: 250px;
+      min-height: 395px;
+      vertical-align: top;
+      border: 1px solid #ccc;
+      margin-left: 0px;
+      margin-right: 5px;
+      border-radius: 10px;
+      transition: all 0.3s ease-in-out;
+
+      &.raised {
+        .card-container {
+          position: absolute;
+          z-index: 10;
+        }
+      }
+
+      .slot {
+        margin-top: -325px;
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+}
+
+.hand-container {
+  width: 100%;
+  overflow: hidden;
+
+  &.spread {
+    overflow: auto;
+  }
+
+  &-scroller {
+    white-space: nowrap;
+
     .hand {
       display: inline-block;
-      white-space: initial;      
+      white-space: initial;
       width: 250px;
       vertical-align: top;
+      margin-left: 0px;
+      transition: all 0.3s ease-in-out;
 
       &.raised {
         .card-container {

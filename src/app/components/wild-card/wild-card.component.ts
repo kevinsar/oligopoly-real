@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Property } from 'src/app/models/card.model';
+import { Property, Card } from 'src/app/models/card.model';
 import { CardLocation } from 'src/app/enums/card-location.enum';
 import { CardAction } from 'src/app/enums/card-action.enum';
 import { CardType } from 'src/app/enums/card-type.enum';
@@ -7,14 +7,18 @@ import { CardType } from 'src/app/enums/card-type.enum';
 @Component({
   selector: 'or-wild-card',
   templateUrl: './wild-card.component.html',
-  styleUrls: ['./wild-card.component.scss'],
+  styleUrls: ['./wild-card.component.scss']
 })
 export class WildCardComponent implements OnInit {
   @Input() name: string;
   @Input() value: number;
   @Input() properties: Property[] = [];
   @Input() cardLocation: CardLocation;
+  @Input() lots: number;
   @Output() cardAction: EventEmitter<CardAction> = new EventEmitter<CardAction>();
+  @Output() updatePropertyOrder: EventEmitter<Property> = new EventEmitter<Property>();
+  @Output() setProperty: EventEmitter<number> = new EventEmitter<number>();
+  propertyIsSet = false;
   cardType: CardType = CardType.WILD;
 
   constructor() {}
@@ -25,8 +29,12 @@ export class WildCardComponent implements OnInit {
     this.cardAction.emit(action);
   }
 
-  flipCard() {
-    this.properties.reverse();
+  setPrimaryProperty(property: Property) {
+    this.updatePropertyOrder.emit(property);
+  }
+
+  setPropertyHandler(lotNumber: number) {
+    this.setProperty.emit(lotNumber);
   }
 
   get propertyClass(): string {

@@ -4,6 +4,5 @@ export enum CardAction {
   BUILD = 'build',
   TRASH = 'trash',
   PAY = 'pay',
-  MOVE = 'move',
-  FLIP = 'flip',
+  MOVE = 'move'
 }

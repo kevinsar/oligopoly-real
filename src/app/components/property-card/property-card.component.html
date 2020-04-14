@@ -2,7 +2,10 @@
   <or-card-actions
     [cardType]="cardType"
     [cardLocation]="cardLocation"
+    [properties]="properties"
+    [lots]="lots"
     (cardAction)="emitCardAction($event)"
+    (setProperty)="setPropertyHandler($event)"
   >
   </or-card-actions>
 
