@@ -1,0 +1,22 @@
+.hand-container {
+  width: 100%;
+  overflow: auto;
+  
+  &-scroller {
+    white-space: nowrap;
+    
+    .hand {
+      display: inline-block;
+      white-space: initial;      
+      width: 250px;
+      vertical-align: top;
+
+      &.raised {
+        .card-container {
+          position: absolute;
+          z-index: 10;
+        }
+      }
+    }
+  }
+}

@@ -10,9 +10,16 @@
   user-select: none;
   cursor: pointer;
 
+  .action-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
   h3.action-card-title {
     text-align: center;
     margin-top: 45px;
+    font-weight: 700;
   }
 
   .card-value {

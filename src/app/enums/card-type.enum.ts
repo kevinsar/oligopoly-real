@@ -1,5 +1,5 @@
 export enum CardType {
-  ACTIION = 'action',
+  ACTION = 'action',
   CURRENCY = 'currency',
   PROPERTY = 'property',
   WILD = 'wild',

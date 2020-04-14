@@ -1,4 +1,11 @@
 <div class="card-container property-card-container">
+  <or-card-actions
+    [cardType]="cardType"
+    [cardLocation]="cardLocation"
+    (cardAction)="emitCardAction($event)"
+  >
+  </or-card-actions>
+
   <div class="card-value">${{ value }}</div>
 
   <div class="property-title-container {{ propertyClass }}">

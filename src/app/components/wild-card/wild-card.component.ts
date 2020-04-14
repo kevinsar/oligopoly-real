@@ -1,5 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Property } from 'src/app/models/card.model';
+import { CardLocation } from 'src/app/enums/card-location.enum';
+import { CardAction } from 'src/app/enums/card-action.enum';
+import { CardType } from 'src/app/enums/card-type.enum';
 
 @Component({
   selector: 'or-wild-card',
@@ -10,10 +13,17 @@ export class WildCardComponent implements OnInit {
   @Input() name: string;
   @Input() value: number;
   @Input() properties: Property[] = [];
+  @Input() cardLocation: CardLocation;
+  @Output() cardAction: EventEmitter<CardAction> = new EventEmitter<CardAction>();
+  cardType: CardType = CardType.WILD;
 
   constructor() {}
 
   ngOnInit(): void {}
+
+  emitCardAction(action: CardAction) {
+    this.cardAction.emit(action);
+  }
 
   flipCard() {
     this.properties.reverse();

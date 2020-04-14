@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { deck } from '../app/data/deck';
+import { Card } from './models/card.model';
+import { Player } from './models/player.model';
 
 @Component({
   selector: 'or-root',
@@ -8,9 +9,6 @@ import { deck } from '../app/data/deck';
 })
 export class AppComponent {
   title = 'oligopoly-real';
-  cards = deck;
-  constructor() {
-    console.log(this.cards);
-    console.log(this.cards.length);
-  }
+  deck: Card[] = [];
+  player: Player;
 }

@@ -1,4 +1,10 @@
 <div class="card-container currency-card-container currency-card-container-{{ value }}">
+  <or-card-actions
+    [cardType]="cardType"
+    [cardLocation]="cardLocation"
+    (cardAction)="emitCardAction($event)"
+  >
+  </or-card-actions>
   <div class="card-value">${{ value }}</div>
 
   <div class="currency-card-container-hero">

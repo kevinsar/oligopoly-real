@@ -9,6 +9,9 @@ import { WildCardComponent } from './components/wild-card/wild-card.component';
 import { RentCardComponent } from './components/rent-card/rent-card.component';
 import { ActionCardComponent } from './components/action-card/action-card.component';
 import { CardActionsComponent } from './components/card-actions/card-actions.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './material.module';
+import { PlayerComponent } from './components/player/player.component';
 
 @NgModule({
   declarations: [
@@ -19,8 +22,9 @@ import { CardActionsComponent } from './components/card-actions/card-actions.com
     RentCardComponent,
     ActionCardComponent,
     CardActionsComponent,
+    PlayerComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
   providers: [],
   bootstrap: [AppComponent],
 })
