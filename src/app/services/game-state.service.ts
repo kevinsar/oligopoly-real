@@ -50,6 +50,7 @@ export class GameStateService {
     currentPlayer.hand = currentPlayer.hand.filter((handCard: Card) => {
       return handCard.id !== card.id;
     });
+    this.gameStateSubject.next(this.gameState);
   }
 
   addToPlayed(playerId: number, card: Card) {
@@ -66,20 +67,25 @@ export class GameStateService {
     currentPlayer.hand = currentPlayer.hand.filter((handCard: Card) => {
       return handCard.id !== card.id;
     });
+    this.gameStateSubject.next(this.gameState);
   }
 
   buildProperty(playerId: number, card: Card, lot = 0) {
-    console.log(playerId, card, lot);
-    debugger;
     const currentPlayer = this.gameState.players.find((player: Player) => {
       return player.id === playerId;
     });
 
-    currentPlayer.land[lot].push(card);
+    currentPlayer.land = currentPlayer.land.map((plot: Card[]) => {
+      return [...plot].filter((plotCard: Card) => {
+        return plotCard.id !== card.id;
+      });
+    });
 
     currentPlayer.hand = currentPlayer.hand.filter((handCard: Card) => {
       return handCard.id !== card.id;
     });
+
+    currentPlayer.land[lot].push(card);
 
     const addNewLot =
       currentPlayer.land.filter((currentLot: Card[]) => {
@@ -102,7 +108,6 @@ export class GameStateService {
     }
 
     this.gameStateSubject.next(this.gameState);
-    console.log(playerId, amount);
   }
 
   setWildCardColor(playerId: number, card: Card, property: Property) {
@@ -110,9 +115,19 @@ export class GameStateService {
       return player.id === playerId;
     });
 
-    const cardToUpdate = currentPlayer.hand.find((handCard: Card) => {
+    let cardToUpdate = currentPlayer.hand.find((handCard: Card) => {
       return handCard.id === card.id;
     });
+
+    if (!cardToUpdate) {
+      currentPlayer.land.forEach((plot: Card[]) => {
+        plot.forEach((plotCard: Card) => {
+          if (plotCard.id === card.id) {
+            cardToUpdate = plotCard;
+          }
+        });
+      });
+    }
 
     cardToUpdate.property.sort((a: Property, b: Property) => {
       if (a.color === property.color) {

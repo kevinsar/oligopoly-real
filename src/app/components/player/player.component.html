@@ -1,10 +1,11 @@
 <div class="player-actions-container">
   <button *ngIf="player.hand.length === 0" mat-button (click)="drawFiveCards()">Draw 5</button>
   <button *ngIf="player.hand.length > 0" mat-button (click)="drawTwoCards()">Draw 2</button>
-  <button mat-button (click)="spreadHand()">{{ !isHandSpread ? 'Spread Hand' : 'Compact Hand' }}</button>
+  <button mat-button (click)="handClickHandler()">{{ !isHandSpread ? 'Spread Hand' : 'Compact Hand' }}</button>
   <button mat-button (click)="viewBank(bankContainer)">View Bank: ${{ bankBalance }}</button>
 
   <button mat-button (click)="viewTrash(trashContainer)">View Cards Played/Trashed</button>
+  <button mat-button (click)="addFakePlayer()">Swap New PLayer</button>
 </div>
 
 <div class="land-container">
@@ -37,13 +38,13 @@
 <ng-template #trashContainer>
   <div class="bank-container">
     <h4>Trash</h4>
-    <span class="bank" *ngFor="let card of trash">
+    <span class="bank" *ngFor="let card of gameState.trash">
       <or-card [card]="card" [cardLocation]="CardLocation.BANK" (cardAction)="cardActionHandler(card, $event)"> </or-card>
     </span>
   </div>
 </ng-template>
 
-<div class="hand-container" #handContainer [class.spread]="isHandSpread">
+<div class="hand-container" orClickOutside (clickOutside)="raisedCardIndex = -1" #handContainer [class.spread]="isHandSpread">
   <div class="hand-container-scroller">
     <span
       class="hand"

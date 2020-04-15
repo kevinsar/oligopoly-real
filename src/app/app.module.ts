@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { PlayerComponent } from './components/player/player.component';
 import { CardComponent } from './components/card/card.component';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { CardComponent } from './components/card/card.component';
     ActionCardComponent,
     CardActionsComponent,
     PlayerComponent,
-    CardComponent
+    CardComponent,
+    ClickOutsideDirective
   ],
   imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
   providers: [],

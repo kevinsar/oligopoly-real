@@ -280,7 +280,7 @@ const propertyCards: Card[] = [
     ]
   },
   {
-    name: 'Illinois Avenue',
+    name: 'Electric Company',
     value: 2,
     type: CardType.PROPERTY,
     property: [

@@ -38,10 +38,6 @@ export class CardActionsComponent implements OnInit, OnChanges {
     }
   }
 
-  get canAddToProperty() {
-    return this.cardType === CardType.PROPERTY || this.cardType === CardType.WILD || (this.isHouse && this.fullSetExists);
-  }
-
   actionHandler(action: CardAction) {
     this.cardAction.emit(action);
   }
@@ -56,5 +52,16 @@ export class CardActionsComponent implements OnInit, OnChanges {
 
   get setWhite() {
     return this.properties && this.properties[0] && (this.properties[0].color === Color.BLACK || this.properties.length > 2);
+  }
+
+  get canAddToProperty() {
+    return (
+      this.cardLocation === CardLocation.HAND &&
+      (this.cardType === CardType.PROPERTY || this.cardType === CardType.WILD || (this.isHouse && this.fullSetExists))
+    );
+  }
+
+  get canChangeColor() {
+    return this.cardType === CardType.PROPERTY || this.cardType === CardType.WILD || (this.isHouse && this.fullSetExists);
   }
 }

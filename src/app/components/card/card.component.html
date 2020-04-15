@@ -10,46 +10,13 @@
   >
   </or-card-actions>
 
-  <or-property-card
-    *ngIf="card.type === 'property'"
-    [name]="card.name"
-    [properties]="card.property"
-    [value]="card.value"
-    (setProperty)="buildLand(card, $event)"
-    (cardAction)="cardActionHandler(card, $event)"
-  >
-  </or-property-card>
-  <or-currency-card
-    (cardAction)="cardActionHandler(card, $event)"
-    *ngIf="card.type === 'currency'"
-    [name]="card.name"
-    [value]="card.value"
-  ></or-currency-card>
-  <or-wild-card
-    *ngIf="card.type === 'wild'"
-    [name]="card.name"
-    [properties]="card.property"
-    [value]="card.value"
-    (setProperty)="buildLand(card, $event)"
-    (cardAction)="cardActionHandler(card, $event)"
-    (updatePropertyOrder)="sortWildCardProperty(card, $event)"
-  >
-  </or-wild-card>
-  <or-rent-card
-    (cardAction)="cardActionHandler(card, $event)"
-    *ngIf="card.type === 'rent'"
-    [name]="card.name"
-    [value]="card.value"
-    [rentColors]="card.rentColors"
-  >
-  </or-rent-card>
-  <or-action-card
-    *ngIf="card.type === 'action'"
-    [name]="card.name"
-    [value]="card.value"
-    [description]="card.description"
-    (cardAction)="cardActionHandler(card, $event)"
-    (setProperty)="buildLand(card, $event)"
-  >
-  </or-action-card>
+  <or-property-card *ngIf="card.type === 'property'" [name]="card.name" [properties]="card.property" [value]="card.value"> </or-property-card>
+
+  <or-currency-card *ngIf="card.type === 'currency'" [name]="card.name" [value]="card.value"></or-currency-card>
+
+  <or-wild-card *ngIf="card.type === 'wild'" [name]="card.name" [properties]="card.property" [value]="card.value"> </or-wild-card>
+
+  <or-rent-card *ngIf="card.type === 'rent'" [name]="card.name" [value]="card.value" [rentColors]="card.rentColors"> </or-rent-card>
+
+  <or-action-card *ngIf="card.type === 'action'" [name]="card.name" [value]="card.value" [description]="card.description"> </or-action-card>
 </div>
