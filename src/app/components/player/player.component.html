@@ -11,26 +11,15 @@
   <div class="land-container-scroller">
     <span class="land" *ngFor="let land of player.land">
       <div class="slot" *ngFor="let card of land">
-        <or-property-card
-          *ngIf="card.type === 'property'"
-          [cardLocation]="'land'"
-          [name]="card.name"
-          [value]="card.value"
-          [properties]="card.property"
-        ></or-property-card>
-        <or-currency-card *ngIf="card.type === 'currency'" [cardLocation]="'land'" [name]="card.name" [value]="card.value"></or-currency-card>
-        <or-wild-card *ngIf="card.type === 'wild'" [cardLocation]="'land'" [name]="card.name" [value]="card.value" [properties]="card.property">
-        </or-wild-card>
-        <or-rent-card *ngIf="card.type === 'rent'" [cardLocation]="'land'" [name]="card.name" [value]="card.value" [rentColors]="card.rentColors">
-        </or-rent-card>
-        <or-action-card
-          *ngIf="card.type === 'action'"
-          [cardLocation]="'land'"
-          [name]="card.name"
-          [value]="card.value"
-          [description]="card.description"
+        <or-card
+          [card]="card"
+          [cardLocation]="CardLocation.LAND"
+          [lotsAvailable]="player.land.length"
+          (cardAction)="cardActionHandler(card, $event)"
+          (setProperty)="buildLand(card, $event)"
+          (updatePropertyOrder)="sortWildCardProperty(card, $event)"
         >
-        </or-action-card>
+        </or-card>
       </div>
     </span>
   </div>
@@ -40,20 +29,7 @@
   <div class="bank-container">
     <h4>Bank</h4>
     <span class="bank" *ngFor="let card of player.bank">
-      <or-property-card
-        *ngIf="card.type === 'property'"
-        [name]="card.name"
-        [cardLocation]="'bank'"
-        [value]="card.value"
-        [properties]="card.property"
-      ></or-property-card>
-      <or-currency-card *ngIf="card.type === 'currency'" [cardLocation]="'bank'" [name]="card.name" [value]="card.value"></or-currency-card>
-      <or-wild-card *ngIf="card.type === 'wild'" [name]="card.name" [cardLocation]="'bank'" [value]="card.value" [properties]="card.property">
-      </or-wild-card>
-      <or-rent-card *ngIf="card.type === 'rent'" [name]="card.name" [cardLocation]="'bank'" [value]="card.value" [rentColors]="card.rentColors">
-      </or-rent-card>
-      <or-action-card *ngIf="card.type === 'action'" [name]="card.name" [cardLocation]="'bank'" [value]="card.value" [description]="card.description">
-      </or-action-card>
+      <or-card [card]="card" [cardLocation]="CardLocation.BANK" (cardAction)="cardActionHandler(card, $event)"> </or-card>
     </span>
   </div>
 </ng-template>
@@ -62,20 +38,7 @@
   <div class="bank-container">
     <h4>Trash</h4>
     <span class="bank" *ngFor="let card of trash">
-      <or-property-card
-        *ngIf="card.type === 'property'"
-        [name]="card.name"
-        [cardLocation]="'bank'"
-        [value]="card.value"
-        [properties]="card.property"
-      ></or-property-card>
-      <or-currency-card *ngIf="card.type === 'currency'" [cardLocation]="'bank'" [name]="card.name" [value]="card.value"></or-currency-card>
-      <or-wild-card *ngIf="card.type === 'wild'" [name]="card.name" [cardLocation]="'bank'" [value]="card.value" [properties]="card.property">
-      </or-wild-card>
-      <or-rent-card *ngIf="card.type === 'rent'" [name]="card.name" [cardLocation]="'bank'" [value]="card.value" [rentColors]="card.rentColors">
-      </or-rent-card>
-      <or-action-card *ngIf="card.type === 'action'" [name]="card.name" [cardLocation]="'bank'" [value]="card.value" [description]="card.description">
-      </or-action-card>
+      <or-card [card]="card" [cardLocation]="CardLocation.BANK" (cardAction)="cardActionHandler(card, $event)"> </or-card>
     </span>
   </div>
 </ng-template>
@@ -89,56 +52,15 @@
       [class.raised]="i === raisedCardIndex"
       (click)="setRaisedCard(i, $event)"
     >
-      <or-property-card
-        *ngIf="card.type === 'property'"
-        [cardLocation]="'hand'"
-        [name]="card.name"
-        [properties]="card.property"
-        [lots]="player.land.length"
-        [value]="card.value"
+      <or-card
+        [card]="card"
+        [cardLocation]="CardLocation.HAND"
+        [lotsAvailable]="player.land.length"
+        (cardAction)="cardActionHandler(card, $event)"
         (setProperty)="buildLand(card, $event)"
-        (cardAction)="cardActionHandler(card, $event)"
-      >
-      </or-property-card>
-      <or-currency-card
-        (cardAction)="cardActionHandler(card, $event)"
-        *ngIf="card.type === 'currency'"
-        [cardLocation]="'hand'"
-        [name]="card.name"
-        [value]="card.value"
-      ></or-currency-card>
-      <or-wild-card
-        *ngIf="card.type === 'wild'"
-        [cardLocation]="'hand'"
-        [name]="card.name"
-        [properties]="card.property"
-        [value]="card.value"
-        [lots]="player.land.length"
-        (setProperty)="buildLand(card, $event)"
-        (cardAction)="cardActionHandler(card, $event)"
         (updatePropertyOrder)="sortWildCardProperty(card, $event)"
       >
-      </or-wild-card>
-      <or-rent-card
-        (cardAction)="cardActionHandler(card, $event)"
-        *ngIf="card.type === 'rent'"
-        [name]="card.name"
-        [value]="card.value"
-        [cardLocation]="'hand'"
-        [rentColors]="card.rentColors"
-      >
-      </or-rent-card>
-      <or-action-card
-        *ngIf="card.type === 'action'"
-        [name]="card.name"
-        [value]="card.value"
-        [lots]="player.land.length"
-        [cardLocation]="'hand'"
-        [description]="card.description"
-        (cardAction)="cardActionHandler(card, $event)"
-        (setProperty)="buildLand(card, $event)"
-      >
-      </or-action-card>
+      </or-card>
     </span>
   </div>
 </div>

@@ -5,6 +5,7 @@ import { GameState } from 'src/app/models/game-state.model';
 import { Player } from 'src/app/models/player.model';
 import { CardAction } from 'src/app/enums/card-action.enum';
 import { MatDialog } from '@angular/material/dialog';
+import { CardLocation } from 'src/app/enums/card-location.enum';
 
 @Component({
   selector: 'or-player',
@@ -14,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class PlayerComponent implements OnInit {
   @ViewChild('handContainer') handContainer: ElementRef;
+  CardLocation = CardLocation;
   player: Player = {
     id: 0,
     name: 'Kevin',

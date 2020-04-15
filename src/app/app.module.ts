@@ -12,6 +12,7 @@ import { CardActionsComponent } from './components/card-actions/card-actions.com
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { PlayerComponent } from './components/player/player.component';
+import { CardComponent } from './components/card/card.component';
 
 @NgModule({
   declarations: [
@@ -23,9 +24,10 @@ import { PlayerComponent } from './components/player/player.component';
     ActionCardComponent,
     CardActionsComponent,
     PlayerComponent,
+    CardComponent
   ],
   imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
