@@ -1,5 +1,6 @@
 <div class="card-container">
   <or-card-actions
+    [isHouse]="card.type === 'action' && (card.name === 'House' || card.name === 'Hotel')"
     [cardType]="card.type"
     [cardLocation]="cardLocation"
     [properties]="card.property"

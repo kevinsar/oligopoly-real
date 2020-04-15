@@ -1,5 +1,6 @@
 import { Card } from '../models/card.model';
 import { CardType } from '../enums/card-type.enum';
+import { Color } from '../enums/color.enum';
 import {
   brownRents,
   blueRents,
@@ -12,7 +13,6 @@ import {
   lightGreenRents,
   yellowRents
 } from './rents';
-import { Color } from '../enums/color.enum';
 
 const propertyCards: Card[] = [
   {

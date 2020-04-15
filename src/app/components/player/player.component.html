@@ -15,7 +15,7 @@
         <or-card
           [card]="card"
           [cardLocation]="CardLocation.LAND"
-          [lotsAvailable]="player.land.length"
+          [lotsAvailable]="player.land"
           (cardAction)="cardActionHandler(card, $event)"
           (setProperty)="buildLand(card, $event)"
           (updatePropertyOrder)="sortWildCardProperty(card, $event)"
@@ -56,7 +56,7 @@
       <or-card
         [card]="card"
         [cardLocation]="CardLocation.HAND"
-        [lotsAvailable]="player.land.length"
+        [lotsAvailable]="player.land"
         (cardAction)="cardActionHandler(card, $event)"
         (setProperty)="buildLand(card, $event)"
         (updatePropertyOrder)="sortWildCardProperty(card, $event)"

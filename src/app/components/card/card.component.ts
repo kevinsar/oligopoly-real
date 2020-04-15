@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Property, Card } from 'src/app/models/card.model';
 import { CardLocation } from 'src/app/enums/card-location.enum';
-import { CardType } from 'src/app/enums/card-type.enum';
 import { CardAction } from 'src/app/enums/card-action.enum';
 
 @Component({
@@ -12,7 +11,7 @@ import { CardAction } from 'src/app/enums/card-action.enum';
 export class CardComponent implements OnInit {
   @Input() card: Card;
   @Input() cardLocation: CardLocation = CardLocation.TRASH;
-  @Input() lotsAvailable = 0;
+  @Input() lotsAvailable: Card[][] = [];
 
   @Output() updatePropertyOrder: EventEmitter<Property> = new EventEmitter<Property>();
   @Output() cardAction: EventEmitter<CardAction> = new EventEmitter<CardAction>();

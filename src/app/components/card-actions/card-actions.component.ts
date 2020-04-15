@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChange
 import { CardType } from 'src/app/enums/card-type.enum';
 import { CardLocation } from 'src/app/enums/card-location.enum';
 import { CardAction } from 'src/app/enums/card-action.enum';
-import { Property } from 'src/app/models/card.model';
+import { Property, Card } from 'src/app/models/card.model';
 import { Color } from 'src/app/enums/color.enum';
 
 @Component({
@@ -14,9 +14,9 @@ export class CardActionsComponent implements OnInit, OnChanges {
   @Input() cardType: CardType;
   @Input() cardLocation: CardLocation;
   @Input() isHouse: boolean;
-  @Input() fullSetExists: boolean;
+  @Input() fullSetExists: boolean = true;
   @Input() properties: Property[] = [];
-  @Input() lots = 5;
+  @Input() lots: Card[][] = [];
   @Output() cardAction: EventEmitter<CardAction> = new EventEmitter<CardAction>();
   @Output() setColor: EventEmitter<Property> = new EventEmitter<Property>();
   @Output() setProperty: EventEmitter<number> = new EventEmitter<number>();
@@ -29,9 +29,8 @@ export class CardActionsComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
     if (changes.lots) {
-      this.lotsMenu = new Array(changes.lots.currentValue).map(() => {
+      this.lotsMenu = new Array((changes.lots.currentValue || []).length).map(() => {
         return 1;
       });
       console.log(this.lotsMenu);
@@ -62,6 +61,6 @@ export class CardActionsComponent implements OnInit, OnChanges {
   }
 
   get canChangeColor() {
-    return this.cardType === CardType.PROPERTY || this.cardType === CardType.WILD || (this.isHouse && this.fullSetExists);
+    return this.cardType === CardType.PROPERTY || this.cardType === CardType.WILD;
   }
 }

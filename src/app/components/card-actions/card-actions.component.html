@@ -1,11 +1,17 @@
 <mat-menu #appMenu="matMenu">
   <button [matMenuTriggerFor]="lotMenu" mat-menu-item *ngIf="canAddToProperty">Add to Land</button>
-  <button (click)="actionHandler(CardAction.PLAY)" mat-menu-item *ngIf="cardLocation === 'hand' && cardType === CardType.ACTION">Play Card</button>
+  <button
+    (click)="actionHandler(CardAction.PLAY)"
+    mat-menu-item
+    *ngIf="cardLocation === 'hand' && (cardType === CardType.RENT || cardType === CardType.ACTION)"
+  >
+    Play Card
+  </button>
   <button (click)="actionHandler(CardAction.BANK)" mat-menu-item *ngIf="cardLocation === 'hand'">Add to Bank</button>
   <button (click)="actionHandler(CardAction.PAY)" mat-menu-item *ngIf="cardLocation === 'land' || cardLocation === 'bank'">Use to Pay</button>
   <button [matMenuTriggerFor]="colorsMenu" mat-menu-item *ngIf="cardType === 'wild'">Set Color</button>
   <button [matMenuTriggerFor]="lotMenu" mat-menu-item *ngIf="cardLocation === 'land'">Move Property</button>
-  <button (click)="actionHandler(CardAction.TRASH)" mat-menu-item *ngIf="cardLocation === 'hand' || cardLocation === 'land'">Throw Away</button>
+  <button (click)="actionHandler(CardAction.TRASH)" mat-menu-item *ngIf="cardLocation === 'hand'">Throw Away</button>
 </mat-menu>
 
 <mat-menu #colorsMenu="matMenu">
