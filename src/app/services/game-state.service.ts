@@ -4,6 +4,7 @@ import { Card, Property } from '../models/card.model';
 import { Player } from '../models/player.model';
 import { GameState } from '../models/game-state.model';
 import { BehaviorSubject } from 'rxjs';
+import { mockGameState } from 'src/assets/mocks';
 
 @Injectable({
   providedIn: 'root'
@@ -24,20 +25,31 @@ export class GameStateService {
   }
 
   startGame() {
-    this.gameState.deck = deck;
-    this.gameState.deck.forEach((card: Card, index: number) => {
-      card.id = index;
-    });
-    this.gameState.deck.sort((a: Card, b: Card) => {
-      const first = Math.random() * 10;
-      const second = Math.random() * 10;
+    // this.gameState.deck = deck;
+    // this.gameState.deck.forEach((card: Card, index: number) => {
+    //   card.id = index;
+    // });
+    // this.gameState.deck.sort((a: Card, b: Card) => {
+    //   const first = Math.random() * 10;
+    //   const second = Math.random() * 10;
 
-      return first > second ? 1 : -1;
-    });
+    //   return first > second ? 1 : -1;
+    // });
+
+    this.gameState = mockGameState;
+    this.gameStateSubject.next(this.gameState);
   }
 
   addPlayer(player: Player) {
-    this.gameState.players.push(player);
+    const playerExists = this.gameState.players.find(existingPlayer => {
+      return existingPlayer.id === player.id;
+    });
+
+    if (!playerExists) {
+      this.gameState.players.push(player);
+    }
+
+    this.gameStateSubject.next(this.gameState);
   }
 
   addToBank(playerId: number, card: Card) {

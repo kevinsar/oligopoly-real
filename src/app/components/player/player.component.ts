@@ -33,7 +33,7 @@ export class PlayerComponent implements OnInit {
     this.gameStateService.addPlayer(this.player);
     this.gameStateService.getGameState().subscribe((state: GameState) => {
       console.clear();
-      console.log(JSON.stringify(state));
+      console.log(state);
       this.gameState = state;
       this.player = this.gameState.players.find((player: Player) => {
         return player.id === this.player.id;
@@ -162,7 +162,7 @@ export class PlayerComponent implements OnInit {
 
   get bankBalance() {
     let bankBalance = 0;
-    this.player.bank.forEach((card: Card) => {
+    this.player?.bank.forEach((card: Card) => {
       bankBalance += card.value;
     });
 

@@ -19,7 +19,7 @@ export class PropertyCardComponent implements OnInit {
     let propertyClass = '';
 
     if (this.properties[0] && this.properties[0].color) {
-      propertyClass = `property-title-container-${this.properties[0].color}`;
+      propertyClass = `property-title-container-${this.properties[0].color} card-bg-${this.properties[0].color}`;
     }
     return propertyClass;
   }

@@ -36,8 +36,9 @@
 }
 
 .hand-container {
+  position: fixed;
+  bottom: -100px;
   width: 100%;
-  overflow: hidden;
 
   &.spread {
     overflow: auto;
@@ -54,10 +55,16 @@
       margin-left: 0px;
       transition: all 0.3s ease-in-out;
 
+      .card-container {
+        transition: all 0.25s ease-in-out;
+        transform: translateY(0px);
+      }
+
       &.raised {
         .card-container {
           position: absolute;
           z-index: 10;
+          transform: translateY(-100px);
         }
       }
     }

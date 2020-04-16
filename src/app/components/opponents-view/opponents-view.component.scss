@@ -1,0 +1,37 @@
+.opponents-view-container {
+  margin: 10px;
+
+  .opponents-view-section {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px;
+    text-align: center;
+    background: #ccc;
+    border: 1px solid black;
+    padding: 5px;
+
+    .opponent-name {
+      font-weight: 700;
+      margin: 5px 0;
+    }
+
+    .opponent-land-container {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+
+      .opponent-land-view {
+        .property-bar {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          width: 130px;
+          padding: 5px 10px;
+          text-align: center;
+          border: 1px solid black;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}

@@ -72,3 +72,46 @@
     background: #918bc2;
   }
 }
+
+.card-bg {
+  &-brown {
+    background: $or-brown;
+  }
+
+  &-blue {
+    background: $or-blue;
+  }
+
+  &-green {
+    background: $or-green;
+  }
+
+  &-light-blue {
+    background: $or-light-blue;
+  }
+
+  &-orange {
+    background: $or-orange;
+  }
+
+  &-purple {
+    background: $or-purple;
+  }
+
+  &-black {
+    background: $or-black;
+    color: $or-text-white;
+  }
+
+  &-red {
+    background: $or-red;
+  }
+
+  &-light-green {
+    background: $or-light-green;
+  }
+
+  &-yellow {
+    background: $or-yellow;
+  }
+}

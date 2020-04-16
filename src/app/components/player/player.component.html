@@ -1,6 +1,6 @@
 <div class="player-actions-container">
-  <button *ngIf="player.hand.length === 0" mat-button (click)="drawFiveCards()">Draw 5</button>
-  <button *ngIf="player.hand.length > 0" mat-button (click)="drawTwoCards()">Draw 2</button>
+  <button *ngIf="player?.hand?.length === 0" mat-button (click)="drawFiveCards()">Draw 5</button>
+  <button *ngIf="player?.hand?.length > 0" mat-button (click)="drawTwoCards()">Draw 2</button>
   <button mat-button (click)="handClickHandler()">{{ !isHandSpread ? 'Spread Hand' : 'Compact Hand' }}</button>
   <button mat-button (click)="viewBank(bankContainer)">View Bank: ${{ bankBalance }}</button>
 
@@ -8,9 +8,13 @@
   <button mat-button (click)="addFakePlayer()">Swap New PLayer</button>
 </div>
 
+<div class="opponents-container">
+  <or-opponents-view [activePlayer]="player" [gameState]="gameState"> </or-opponents-view>
+</div>
+
 <div class="land-container">
   <div class="land-container-scroller">
-    <span class="land" *ngFor="let land of player.land">
+    <span class="land" *ngFor="let land of player?.land">
       <div class="slot" *ngFor="let card of land">
         <or-card
           [card]="card"
@@ -48,7 +52,7 @@
   <div class="hand-container-scroller">
     <span
       class="hand"
-      *ngFor="let card of player.hand; let i = index"
+      *ngFor="let card of player?.hand; let i = index"
       [style.marginLeft]="i > 0 ? handCardOffset * -1 + 'px' : ''"
       [class.raised]="i === raisedCardIndex"
       (click)="setRaisedCard(i, $event)"

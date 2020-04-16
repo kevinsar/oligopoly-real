@@ -14,6 +14,7 @@ import { MaterialModule } from './material.module';
 import { PlayerComponent } from './components/player/player.component';
 import { CardComponent } from './components/card/card.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { OpponentsViewComponent } from './components/opponents-view/opponents-view.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
     CardActionsComponent,
     PlayerComponent,
     CardComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    OpponentsViewComponent
   ],
   imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
   providers: [],

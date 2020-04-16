@@ -21,7 +21,7 @@ export class WildCardComponent implements OnInit {
     if (this.properties.length > 2) {
       propertyClass = `property-title-container-rainbow`;
     } else if (this.properties[0] && this.properties[0].color) {
-      propertyClass = `property-title-container-${this.properties[0].color}`;
+      propertyClass = `property-title-container-${this.properties[0].color} card-bg-${this.properties[0].color}`;
     }
     return propertyClass;
   }
@@ -30,7 +30,7 @@ export class WildCardComponent implements OnInit {
     let propertyClass = '';
 
     if (this.properties[1] && this.properties[1].color) {
-      propertyClass = `property-title-container-${this.properties[1].color}`;
+      propertyClass = `property-title-container-${this.properties[1].color} card-bg-${this.properties[1].color}`;
     }
     return propertyClass;
   }

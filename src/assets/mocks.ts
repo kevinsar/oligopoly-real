@@ -1,4 +1,6 @@
-export const mockGameState = {
+import { GameState } from 'src/app/models/game-state.model';
+
+export const mockGameState: GameState = {
   deck: [
     {
       name: 'Pennsylvania Railroad',
@@ -469,7 +471,7 @@ export const mockGameState = {
     },
     {
       id: 1586926870459,
-      name: '1586926870459',
+      name: 'Helen',
       hand: [
         {
           name: 'House',
@@ -605,7 +607,7 @@ export const mockGameState = {
     },
     {
       id: 1586926948752,
-      name: '1586926948752',
+      name: 'Ben',
       hand: [
         {
           name: 'Sly Deal',
@@ -722,7 +724,7 @@ export const mockGameState = {
     },
     {
       id: 1586927031244,
-      name: '1586927031244',
+      name: 'Eileen',
       hand: [
         {
           name: 'Pass Go',
@@ -818,7 +820,7 @@ export const mockGameState = {
     },
     {
       id: 1586927099185,
-      name: '1586927099185',
+      name: 'Marc',
       hand: [
         {
           name: 'Hotel',
@@ -918,7 +920,7 @@ export const mockGameState = {
     },
     {
       id: 1586927129382,
-      name: '1586927129382',
+      name: 'Alyssa',
       hand: [
         {
           name: 'Deal Breaker',
@@ -1160,4 +1162,4 @@ export const mockGameState = {
       id: 104
     }
   ]
-};
+} as any;
