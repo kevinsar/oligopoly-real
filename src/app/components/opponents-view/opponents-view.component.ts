@@ -46,7 +46,9 @@ export class OpponentsViewComponent implements OnInit, OnChanges {
   }
 
   openDialog(cardContainer: TemplateRef<any>) {
-    this.dialog.open(cardContainer, {});
+    this.dialog.open(cardContainer, {
+      maxHeight: '80%'
+    });
   }
 
   getBankBalance(cards: Card[]) {

@@ -21,18 +21,6 @@ export const mockGameState: GameState = {
       id: 54
     },
     {
-      name: 'Pacific Avenue',
-      value: 4,
-      type: 'property',
-      property: [
-        {
-          color: 'green',
-          rents: [2, 4, 7]
-        }
-      ],
-      id: 5
-    },
-    {
       name: '$3',
       value: 3,
       type: 'currency',
@@ -525,6 +513,18 @@ export const mockGameState: GameState = {
           }
         ],
         [
+          {
+            name: 'Pacific Avenue',
+            value: 4,
+            type: 'property',
+            property: [
+              {
+                color: 'green',
+                rents: [2, 4, 7]
+              }
+            ],
+            id: 5
+          },
           {
             name: 'Pennsylvania Avenue',
             value: 4,
