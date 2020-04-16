@@ -5,6 +5,7 @@ import { Player } from '../models/player.model';
 import { GameState } from '../models/game-state.model';
 import { BehaviorSubject } from 'rxjs';
 import { mockGameState } from 'src/assets/mocks';
+import { CardLocation } from '../enums/card-location.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,45 @@ export class GameStateService {
     // });
 
     this.gameState = mockGameState;
+    this.gameStateSubject.next(this.gameState);
+  }
+
+  payPlayer(playerId: number, playerToPay: Player, card: Card, cardLocation: CardLocation) {
+    const payer = this.gameState.players.find((player: Player) => {
+      return player.id === playerId;
+    });
+
+    const receiver = this.gameState.players.find((player: Player) => {
+      return player.id === playerToPay.id;
+    });
+
+    if (cardLocation === CardLocation.BANK) {
+      const cardToRemoveIndex = payer.bank.findIndex((bankCard: Card) => {
+        return bankCard.name === card.name && bankCard.value === card.value;
+      });
+
+      payer.bank.splice(cardToRemoveIndex, 1);
+
+      receiver.bank.push(card);
+    } else if (cardLocation === CardLocation.LAND) {
+      let cardLotLocationIndex = -1;
+      const lotLocationIndex = payer.land.findIndex((lot: Card[]) => {
+        const cardIndex = lot.findIndex((lotCard: Card) => {
+          return lotCard.name === card.name && lotCard.value === card.value;
+        });
+
+        if (cardIndex > -1) {
+          cardLotLocationIndex = cardIndex;
+        }
+
+        return cardIndex > -1;
+      });
+
+      payer.land[lotLocationIndex].splice(cardLotLocationIndex, 1);
+
+      receiver.unAssigned.push(card);
+    }
+
     this.gameStateSubject.next(this.gameState);
   }
 
@@ -95,6 +135,10 @@ export class GameStateService {
 
     currentPlayer.hand = currentPlayer.hand.filter((handCard: Card) => {
       return handCard.id !== card.id;
+    });
+
+    currentPlayer.unAssigned = currentPlayer.unAssigned.filter((unassignedCard: Card) => {
+      return unassignedCard.id !== card.id;
     });
 
     currentPlayer.land[lot].push(card);

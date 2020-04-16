@@ -3,6 +3,84 @@ import { GameState } from 'src/app/models/game-state.model';
 export const mockGameState: GameState = {
   deck: [
     {
+      name: '$1',
+      value: 1,
+      type: 'currency',
+      id: 40
+    },
+    {
+      name: '$4',
+      value: 4,
+      type: 'currency',
+      id: 56
+    },
+    {
+      name: '$2',
+      value: 2,
+      type: 'currency',
+      id: 46
+    },
+    {
+      name: '$5',
+      value: 5,
+      type: 'currency',
+      id: 58
+    },
+    {
+      name: 'Baltic Avenue',
+      value: 1,
+      type: 'property',
+      property: [
+        {
+          color: 'brown',
+          rents: [1, 2]
+        }
+      ],
+      id: 0
+    },
+    {
+      name: 'Ventnor Avenue',
+      value: 2,
+      type: 'property',
+      property: [
+        {
+          color: 'yellow',
+          rents: [2, 4, 6]
+        }
+      ],
+      id: 25
+    },
+    {
+      name: 'Wild Card',
+      value: 2,
+      type: 'wild',
+      property: [
+        {
+          color: 'orange',
+          rents: [1, 3, 5]
+        },
+        {
+          color: 'purple',
+          rents: [1, 2, 4]
+        }
+      ],
+      id: 30
+    },
+    {
+      name: 'Pass Go',
+      value: 1,
+      type: 'action',
+      description: 'Draw 2 extra cards.',
+      id: 106
+    },
+    {
+      name: 'Pass Go',
+      value: 1,
+      type: 'action',
+      description: 'Draw 2 extra cards.',
+      id: 100
+    },
+    {
       name: 'Pennsylvania Railroad',
       value: 2,
       type: 'property',
@@ -291,6 +369,7 @@ export const mockGameState: GameState = {
     {
       id: 0,
       name: 'Kevin',
+      unAssigned: [],
       hand: [
         {
           name: 'Just Say No!',
@@ -460,6 +539,7 @@ export const mockGameState: GameState = {
     {
       id: 1586926870459,
       name: 'Helen',
+      unAssigned: [],
       hand: [
         {
           name: 'House',
@@ -608,6 +688,7 @@ export const mockGameState: GameState = {
     {
       id: 1586926948752,
       name: 'Ben',
+      unAssigned: [],
       hand: [
         {
           name: 'Sly Deal',
@@ -723,104 +804,9 @@ export const mockGameState: GameState = {
       ]
     },
     {
-      id: 1586927031244,
-      name: 'Eileen',
-      hand: [
-        {
-          name: 'Pass Go',
-          value: 1,
-          type: 'action',
-          description: 'Draw 2 extra cards.',
-          id: 106
-        },
-        {
-          name: 'Pass Go',
-          value: 1,
-          type: 'action',
-          description: 'Draw 2 extra cards.',
-          id: 100
-        }
-      ],
-      land: [
-        [
-          {
-            name: 'Baltic Avenue',
-            value: 1,
-            type: 'property',
-            property: [
-              {
-                color: 'brown',
-                rents: [1, 2]
-              }
-            ],
-            id: 0
-          }
-        ],
-        [
-          {
-            name: 'Ventnor Avenue',
-            value: 2,
-            type: 'property',
-            property: [
-              {
-                color: 'yellow',
-                rents: [2, 4, 6]
-              }
-            ],
-            id: 25
-          }
-        ],
-        [
-          {
-            name: 'Wild Card',
-            value: 2,
-            type: 'wild',
-            property: [
-              {
-                color: 'orange',
-                rents: [1, 3, 5]
-              },
-              {
-                color: 'purple',
-                rents: [1, 2, 4]
-              }
-            ],
-            id: 30
-          }
-        ],
-        [],
-        []
-      ],
-      bank: [
-        {
-          name: '$1',
-          value: 1,
-          type: 'currency',
-          id: 40
-        },
-        {
-          name: '$4',
-          value: 4,
-          type: 'currency',
-          id: 56
-        },
-        {
-          name: '$2',
-          value: 2,
-          type: 'currency',
-          id: 46
-        },
-        {
-          name: '$5',
-          value: 5,
-          type: 'currency',
-          id: 58
-        }
-      ]
-    },
-    {
       id: 1586927099185,
       name: 'Marc',
+      unAssigned: [],
       hand: [
         {
           name: 'Hotel',
@@ -921,6 +907,7 @@ export const mockGameState: GameState = {
     {
       id: 1586927129382,
       name: 'Alyssa',
+      unAssigned: [],
       hand: [
         {
           name: 'Deal Breaker',

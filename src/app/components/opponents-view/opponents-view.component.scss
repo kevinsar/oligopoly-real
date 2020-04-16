@@ -6,9 +6,10 @@
     vertical-align: top;
     margin: 10px;
     text-align: center;
-    background: #ccc;
     border: 1px solid black;
     padding: 5px;
+    max-width: 25%;
+    background: #c6e679;
 
     .opponent-name {
       font-weight: 700;
@@ -21,6 +22,8 @@
       flex-direction: row;
 
       .opponent-land-view {
+        margin: 3px;
+
         .property-bar {
           text-overflow: ellipsis;
           overflow: hidden;

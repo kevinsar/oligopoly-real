@@ -8,7 +8,7 @@
     Play Card
   </button>
   <button (click)="actionHandler(CardAction.BANK)" mat-menu-item *ngIf="cardLocation === 'hand'">Add to Bank</button>
-  <button (click)="actionHandler(CardAction.PAY)" mat-menu-item *ngIf="cardLocation === 'land' || cardLocation === 'bank'">Use to Pay</button>
+  <button [matMenuTriggerFor]="payableMenu" mat-menu-item *ngIf="cardLocation === 'land' || cardLocation === 'bank'">Use to Pay</button>
   <button [matMenuTriggerFor]="colorsMenu" mat-menu-item *ngIf="cardType === 'wild'">Set Color</button>
   <button [matMenuTriggerFor]="lotMenu" mat-menu-item *ngIf="cardLocation === 'land'">Move Property</button>
   <button (click)="actionHandler(CardAction.TRASH)" mat-menu-item *ngIf="cardLocation === 'hand'">Throw Away</button>
@@ -20,6 +20,10 @@
 
 <mat-menu #lotMenu="matMenu">
   <button *ngFor="let lot of lotsMenu; let i = index" mat-menu-item (click)="setPropertyHandler(i)">Lot #{{ i + 1 }}</button>
+</mat-menu>
+
+<mat-menu #payableMenu="matMenu">
+  <button *ngFor="let player of payablePlayers" mat-menu-item (click)="payPlayerHandler(player, cardLocation)">{{ player.name }}</button>
 </mat-menu>
 
 <button class="action-button" [class.white]="setWhite" mat-icon-button [matMenuTriggerFor]="appMenu">

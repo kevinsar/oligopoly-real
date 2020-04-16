@@ -1,8 +1,10 @@
 <div class="opponents-view-container">
   <div *ngFor="let opponent of opponents" class="opponents-view-section">
-    <p class="opponent-name">{{ opponent.name }}</p>
-    <button mat-button (click)="setBankToView(opponent.bank); openDialog(bankContainer)">View Bank: {{ getBankBalance(opponent.bank) }}</button>
-    <button mat-button (click)="setLandToView(opponent.land); openDialog(landContainer)">View Land</button>
+    <p class="opponent-name">{{ opponent.name }} - ({{ opponent.hand.length }} Cards In Hand)</p>
+    <button mat-stroked-button (click)="setBankToView(opponent.bank); openDialog(bankContainer)">
+      View Bank: {{ getBankBalance(opponent.bank) }}
+    </button>
+    <button mat-stroked-button (click)="setLandToView(opponent.land); openDialog(landContainer)">View Land</button>
     <div class="opponent-land-container">
       <div *ngFor="let plot of opponent?.land" class="opponent-land-view">
         <div *ngFor="let card of plot" class="property-bar card-bg-{{ card.property[0].color }}">
@@ -16,9 +18,11 @@
 <ng-template #bankContainer>
   <div class="bank-container">
     <h4>Bank</h4>
-    <span class="bank" *ngFor="let card of bankToView">
-      <or-card [card]="card" [cardLocation]="CardLocation.OPPONENT"> </or-card>
-    </span>
+    <div class="bank-cards-container">
+      <span class="bank" *ngFor="let card of bankToView">
+        <or-card [card]="card" [cardLocation]="CardLocation.OPPONENT"> </or-card>
+      </span>
+    </div>
   </div>
 </ng-template>
 
@@ -27,15 +31,7 @@
     <div class="land-container-scroller">
       <span class="land" *ngFor="let land of landToView">
         <div class="slot" *ngFor="let card of land">
-          <or-card
-            [card]="card"
-            [cardLocation]="CardLocation.LAND"
-            [lotsAvailable]="landToView"
-            (cardAction)="cardActionHandler(card, $event)"
-            (setProperty)="buildLand(card, $event)"
-            (updatePropertyOrder)="sortWildCardProperty(card, $event)"
-          >
-          </or-card>
+          <or-card [card]="card" [cardLocation]="CardLocation.OPPONENT" [lotsAvailable]="landToView"> </or-card>
         </div>
       </span>
     </div>

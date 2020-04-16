@@ -10,6 +10,11 @@
   user-select: none;
   cursor: pointer;
   overflow: hidden;
+  white-space: initial;
+
+  .description {
+    margin-top: 15px;
+  }
 
   .action-button {
     position: absolute;

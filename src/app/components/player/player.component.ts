@@ -15,6 +15,7 @@ import { CardLocation } from 'src/app/enums/card-location.enum';
 })
 export class PlayerComponent implements OnInit {
   @ViewChild('handContainer') handContainer: ElementRef;
+  @ViewChild('unassignedContainer') unassignedContainer: TemplateRef<any>;
   CardLocation = CardLocation;
   gameState: GameState;
   player: Player = {
@@ -22,7 +23,8 @@ export class PlayerComponent implements OnInit {
     name: 'Kevin',
     hand: [],
     land: [[], [], [], [], []],
-    bank: []
+    bank: [],
+    unAssigned: []
   };
   handCardOffset = 0;
   raisedCardIndex = -1;
@@ -32,12 +34,15 @@ export class PlayerComponent implements OnInit {
     this.gameStateService.startGame();
     this.gameStateService.addPlayer(this.player);
     this.gameStateService.getGameState().subscribe((state: GameState) => {
-      console.clear();
       console.log(state);
       this.gameState = state;
       this.player = this.gameState.players.find((player: Player) => {
         return player.id === this.player.id;
       });
+
+      if (this.player.unAssigned.length > 0) {
+        this.openDialog(this.unassignedContainer);
+      }
     });
   }
 
@@ -47,7 +52,8 @@ export class PlayerComponent implements OnInit {
       name: new Date().getTime() + '',
       hand: [],
       land: [[], [], [], [], []],
-      bank: []
+      bank: [],
+      unAssigned: []
     };
 
     this.gameStateService.addPlayer(this.player);
@@ -101,6 +107,9 @@ export class PlayerComponent implements OnInit {
 
   buildLand(card: Card, lot?: number) {
     this.gameStateService.buildProperty(this.player.id, card, lot);
+    if (this.player.unAssigned.length <= 0) {
+      this.dialog.closeAll();
+    }
     this.handClickHandler(true);
   }
 
@@ -153,11 +162,15 @@ export class PlayerComponent implements OnInit {
   }
 
   viewTrash(trashContainer: TemplateRef<any>) {
-    this.viewBank(trashContainer);
+    this.openDialog(trashContainer);
   }
 
-  viewBank(bankContainer: TemplateRef<any>) {
-    this.dialog.open(bankContainer, {});
+  openDialog(dialogContainer: TemplateRef<any>) {
+    this.dialog.open(dialogContainer, {});
+  }
+
+  payPlayerHandler(payEvent: { player: Player; cardLocation: CardLocation }, card: Card) {
+    this.gameStateService.payPlayer(this.player.id, payEvent.player, card, payEvent.cardLocation);
   }
 
   get bankBalance() {

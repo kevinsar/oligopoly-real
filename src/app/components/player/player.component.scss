@@ -1,3 +1,19 @@
+.player-container {
+  background: #fafafa;
+  height: 100vh;
+
+  h4 {
+    font-weight: 700;
+    text-align: center;
+    margin: 10px 0;
+  }
+}
+
+.bank-cards-container {
+  white-space: nowrap;
+  overflow: auto;
+}
+
 .land-container {
   width: 100%;
   overflow: auto;
@@ -37,8 +53,9 @@
 
 .hand-container {
   position: fixed;
-  bottom: -100px;
+  bottom: -175px;
   width: 100%;
+  background: rgba(255, 255, 255, 0.5);
 
   &.spread {
     overflow: auto;
@@ -64,7 +81,7 @@
         .card-container {
           position: absolute;
           z-index: 10;
-          transform: translateY(-100px);
+          transform: translateY(-175px);
         }
       }
     }

@@ -6,4 +6,5 @@ export interface Player {
   hand: Card[];
   land: Card[][];
   bank: Card[];
+  unAssigned: Card[];
 }

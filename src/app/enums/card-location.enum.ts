@@ -4,5 +4,6 @@ export enum CardLocation {
   DECK = 'deck',
   TRASH = 'trash',
   BANK = 'bank',
-  OPPONENT = 'opponent'
+  OPPONENT = 'opponent',
+  UNASSIGNED = 'unAssigned'
 }
