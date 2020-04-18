@@ -6,10 +6,9 @@
     <button mat-stroked-button (click)="openDialog(bankContainer)">View Bank: ${{ bankBalance }}</button>
 
     <button mat-stroked-button (click)="viewTrash(trashContainer)">View Cards Played/Trashed</button>
-    <button mat-stroked-button (click)="addFakePlayer()">Swap New PLayer</button>
   </div>
 
-  <div class="opponents-container">
+  <div class="opponents-container" *ngIf="player">
     <or-opponents-view [activePlayer]="player" [gameState]="gameState"> </or-opponents-view>
   </div>
 
@@ -64,7 +63,7 @@
 
   <div class="hand-container" orClickOutside (clickOutside)="raisedCardIndex = -1" #handContainer [class.spread]="isHandSpread">
     <h4>Your Hand</h4>
-    <div class="hand-container-scroller">
+    <div class="hand-container-scroller" *ngIf="player?.hand.length > 0">
       <span
         class="hand"
         *ngFor="let card of player?.hand; let i = index"
@@ -84,20 +83,20 @@
       </span>
     </div>
   </div>
-</div>
 
-<ng-template #unassignedContainer>
-  <div class="bank-container">
-    <h4>You Must Choose Where to Place Your New Property</h4>
-    <span class="bank" *ngFor="let card of player.unAssigned">
-      <or-card
-        [card]="card"
-        [lotsAvailable]="player.land"
-        [cardLocation]="CardLocation.UNASSIGNED"
-        (setProperty)="buildLand(card, $event)"
-        (cardAction)="cardActionHandler(card, $event)"
-      >
-      </or-card>
-    </span>
-  </div>
-</ng-template>
+  <ng-template #unassignedContainer>
+    <div class="bank-container">
+      <h4>You Must Choose Where to Place Your New Property</h4>
+      <span class="bank" *ngFor="let card of player.unAssigned">
+        <or-card
+          [card]="card"
+          [lotsAvailable]="player.land"
+          [cardLocation]="CardLocation.UNASSIGNED"
+          (setProperty)="buildLand(card, $event)"
+          (cardAction)="cardActionHandler(card, $event)"
+        >
+        </or-card>
+      </span>
+    </div>
+  </ng-template>
+</div>

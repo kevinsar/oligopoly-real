@@ -52,6 +52,7 @@
 }
 
 .hand-container {
+  transition: all 0.25s ease-in-out;
   position: fixed;
   bottom: -175px;
   width: 100%;
@@ -59,6 +60,7 @@
 
   &.spread {
     overflow: auto;
+    bottom: 0;
   }
 
   &-scroller {

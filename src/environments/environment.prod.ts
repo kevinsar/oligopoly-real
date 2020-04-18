@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  gameUrl: 'https://oligopoly-real.herokuapp.com/'
 };

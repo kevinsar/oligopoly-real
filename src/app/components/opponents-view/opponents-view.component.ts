@@ -32,7 +32,7 @@ export class OpponentsViewComponent implements OnInit, OnChanges {
   }
 
   getOpponentStates() {
-    this.opponents = this.gameState.players.filter((player: Player) => {
+    this.opponents = this.gameState?.players.filter((player: Player) => {
       return player.id !== this.activePlayer.id;
     });
   }

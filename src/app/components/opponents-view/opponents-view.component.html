@@ -1,14 +1,16 @@
 <div class="opponents-view-container">
-  <div *ngFor="let opponent of opponents" class="opponents-view-section">
-    <p class="opponent-name">{{ opponent.name }} - ({{ opponent.hand.length }} Cards In Hand)</p>
-    <button mat-stroked-button (click)="setBankToView(opponent.bank); openDialog(bankContainer)">
-      View Bank: {{ getBankBalance(opponent.bank) }}
-    </button>
-    <button mat-stroked-button (click)="setLandToView(opponent.land); openDialog(landContainer)">View Land</button>
-    <div class="opponent-land-container">
-      <div *ngFor="let plot of opponent?.land" class="opponent-land-view">
-        <div *ngFor="let card of plot" class="property-bar card-bg-{{ card.property[0].color }}">
-          {{ card.name }}
+  <div class="opponents-view-content" *ngIf="gameState && gameState.players">
+    <div *ngFor="let opponent of opponents" class="opponents-view-section">
+      <p class="opponent-name">{{ opponent.name }} - ({{ opponent.hand.length }} Cards In Hand)</p>
+      <button mat-stroked-button (click)="setBankToView(opponent.bank); openDialog(bankContainer)">
+        View Bank: {{ getBankBalance(opponent.bank) }}
+      </button>
+      <button mat-stroked-button (click)="setLandToView(opponent.land); openDialog(landContainer)">View Land</button>
+      <div class="opponent-land-container">
+        <div *ngFor="let plot of opponent?.land" class="opponent-land-view">
+          <div *ngFor="let card of plot" class="property-bar card-bg-{{ card.property[0].color }}">
+            {{ card.name }}
+          </div>
         </div>
       </div>
     </div>

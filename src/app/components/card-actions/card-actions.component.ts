@@ -39,7 +39,6 @@ export class CardActionsComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
     if (changes.lots) {
       this.lotsMenu = new Array((this.lots || []).length).map(() => {
         return 1;

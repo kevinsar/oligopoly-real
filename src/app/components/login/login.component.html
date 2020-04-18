@@ -1,0 +1,22 @@
+<div class="login-page">
+  <div class="login-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="name" type="text" placeholder="Player Name" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="submit()">Start a New Game</button>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="name" type="text" placeholder="Player Name" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Game Code</mat-label>
+      <input matInput [(ngModel)]="gameId" type="text" class="room-code" placeholder="Room Code" />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="submit()">Join Existing Game</button>
+  </div>
+</div>
+
+<small *ngIf="gameExistsError" class="error">This game code does not exist, please double check and try again.</small>

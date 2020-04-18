@@ -1,4 +1,5 @@
 export enum CardAction {
+  DRAW = 'draw',
   PLAY = 'play',
   BANK = 'bank',
   BUILD = 'build',

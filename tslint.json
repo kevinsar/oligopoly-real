@@ -21,6 +21,7 @@
     "indent": {
       "options": ["spaces"]
     },
+    "no-string-literal": false,
     "max-classes-per-file": false,
     "max-line-length": [true, 150],
     "member-ordering": [

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation, TemplateRef, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { Card, Property } from 'src/app/models/card.model';
 import { GameStateService } from 'src/app/services/game-state.service';
 import { GameState } from 'src/app/models/game-state.model';
@@ -6,6 +6,7 @@ import { Player } from 'src/app/models/player.model';
 import { CardAction } from 'src/app/enums/card-action.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { CardLocation } from 'src/app/enums/card-location.enum';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'or-player',
@@ -13,7 +14,7 @@ import { CardLocation } from 'src/app/enums/card-location.enum';
   styleUrls: ['./player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlayerComponent implements OnInit {
+export class PlayerComponent implements OnInit, AfterViewInit {
   @ViewChild('handContainer') handContainer: ElementRef;
   @ViewChild('unassignedContainer') unassignedContainer: TemplateRef<any>;
   CardLocation = CardLocation;
@@ -30,9 +31,17 @@ export class PlayerComponent implements OnInit {
   raisedCardIndex = -1;
   isHandSpread = false;
 
-  constructor(private gameStateService: GameStateService, private dialog: MatDialog) {
-    this.gameStateService.startGame();
-    this.gameStateService.addPlayer(this.player);
+  constructor(private gameStateService: GameStateService, private dialog: MatDialog, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
+    this.player.id = parseInt(window.localStorage.getItem('userId'), 10);
+    this.route.data.subscribe((params: any) => {
+      this.gameStateService.setGameState(params.gameState);
+    });
+  }
+
+  ngOnInit(): void {}
+
+  ngAfterViewInit() {
+    console.log(this.handContainer);
     this.gameStateService.getGameState().subscribe((state: GameState) => {
       console.log(state);
       this.gameState = state;
@@ -40,26 +49,16 @@ export class PlayerComponent implements OnInit {
         return player.id === this.player.id;
       });
 
+      console.log(this.player);
       if (this.player.unAssigned.length > 0) {
         this.openDialog(this.unassignedContainer);
+      } else {
+        this.dialog.closeAll();
       }
+      this.handClickHandler(true);
+      this.cdr.detectChanges();
     });
   }
-
-  addFakePlayer() {
-    this.player = {
-      id: new Date().getTime(),
-      name: new Date().getTime() + '',
-      hand: [],
-      land: [[], [], [], [], []],
-      bank: [],
-      unAssigned: []
-    };
-
-    this.gameStateService.addPlayer(this.player);
-  }
-
-  ngOnInit(): void {}
 
   handClickHandler(forceCompactHand?: boolean) {
     if (forceCompactHand || this.isHandSpread) {
@@ -74,8 +73,6 @@ export class PlayerComponent implements OnInit {
   drawTwoCards() {
     this.handCardOffset = 0;
     this.gameStateService.drawCards(this.player.id, 2);
-
-    this.handClickHandler(true);
   }
 
   drawFiveCards() {
@@ -107,10 +104,6 @@ export class PlayerComponent implements OnInit {
 
   buildLand(card: Card, lot?: number) {
     this.gameStateService.buildProperty(this.player.id, card, lot);
-    if (this.player.unAssigned.length <= 0) {
-      this.dialog.closeAll();
-    }
-    this.handClickHandler(true);
   }
 
   addToBank(card: Card) {
@@ -127,7 +120,6 @@ export class PlayerComponent implements OnInit {
 
   sortWildCardProperty(card: Card, property: Property) {
     this.gameStateService.setWildCardColor(this.player.id, card, property);
-    this.handClickHandler(true);
   }
 
   payPlayer() {}
@@ -138,21 +130,25 @@ export class PlayerComponent implements OnInit {
   }
 
   compactHand() {
-    this.raisedCardIndex = -1;
+    console.log(this.player?.hand.length > 0, this.handContainer.nativeElement.querySelector('.hand-container-scroller'));
+    if (this.player?.hand.length > 0 && this.handContainer?.nativeElement.querySelector('.hand-container-scroller')) {
+      console.log(this.handContainer.nativeElement.querySelector('.hand-container-scroller').getBoundingClientRect().width);
+      this.raisedCardIndex = -1;
 
-    const handWidth = this.player.hand.length * 252;
-    const scrollerWidth = this.handContainer.nativeElement.querySelector('.hand-container-scroller').getBoundingClientRect().width;
-    const offset = (handWidth - scrollerWidth) / (this.player.hand.length - 1);
+      const handWidth = this.player.hand.length * 252;
+      const scrollerWidth = this.handContainer.nativeElement.querySelector('.hand-container-scroller').getBoundingClientRect().width;
+      const offset = (handWidth - scrollerWidth) / (this.player.hand.length - 1);
 
-    if (offset > 0) {
-      this.handCardOffset = offset;
-    } else {
-      this.handCardOffset = 0;
+      if (offset > 0) {
+        this.handCardOffset = offset;
+      } else {
+        this.handCardOffset = 0;
+      }
     }
   }
 
   setRaisedCard(cardIndex: number, event) {
-    if (!event.target.classList.contains('mat-icon')) {
+    if (!event.target.classList.contains('mat-icon') && !this.isHandSpread) {
       if (this.raisedCardIndex === cardIndex) {
         this.raisedCardIndex = -1;
       } else {

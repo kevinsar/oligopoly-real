@@ -15,6 +15,9 @@ import { PlayerComponent } from './components/player/player.component';
 import { CardComponent } from './components/card/card.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { OpponentsViewComponent } from './components/opponents-view/opponents-view.component';
+import { LoginComponent } from './components/login/login.component';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -28,9 +31,10 @@ import { OpponentsViewComponent } from './components/opponents-view/opponents-vi
     PlayerComponent,
     CardComponent,
     ClickOutsideDirective,
-    OpponentsViewComponent
+    OpponentsViewComponent,
+    LoginComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
+  imports: [BrowserModule, HttpClientModule, FormsModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
   providers: [],
   bootstrap: [AppComponent]
 })
