@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   submit() {
-    window.localStorage.removeItem('username');
+    window.localStorage.removeItem('userName');
     window.localStorage.removeItem('gameId');
     window.localStorage.removeItem('userId');
 
@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
       (resp: any) => {
         console.log(resp);
         if (resp.success) {
-          window.localStorage.setItem('username', this.name);
+          window.localStorage.setItem('userName', this.name);
           window.localStorage.setItem('gameId', this.gameId);
           window.localStorage.setItem('userId', resp.player.id);
           this.gameStateService.setGameId(this.gameId);

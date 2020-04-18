@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation, TemplateRef, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation, TemplateRef, ChangeDetectorRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { Card, Property } from 'src/app/models/card.model';
 import { GameStateService } from 'src/app/services/game-state.service';
 import { GameState } from 'src/app/models/game-state.model';
@@ -6,7 +6,12 @@ import { Player } from 'src/app/models/player.model';
 import { CardAction } from 'src/app/enums/card-action.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { CardLocation } from 'src/app/enums/card-location.enum';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SocketService } from 'src/app/services/socket.service';
+import * as NoSleep from 'nosleep.js';
+import { MessageType } from 'src/app/enums/message-type.enum';
+import { Message } from 'src/app/models/message.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'or-player',
@@ -14,7 +19,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlayerComponent implements OnInit, AfterViewInit {
+export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('handContainer') handContainer: ElementRef;
   @ViewChild('unassignedContainer') unassignedContainer: TemplateRef<any>;
   CardLocation = CardLocation;
@@ -31,19 +36,70 @@ export class PlayerComponent implements OnInit, AfterViewInit {
   raisedCardIndex = -1;
   isHandSpread = false;
 
-  constructor(private gameStateService: GameStateService, private dialog: MatDialog, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
+  /* Socket Connection */
+  ioConnection: any;
+  showReady = false;
+  showWaiting = false;
+  waitMode = false;
+  gameId = '';
+  randomId = '';
+  startingScore = 0;
+  noSleep: any;
+  disconnected = false;
+
+  constructor(
+    private socketService: SocketService,
+    private router: Router,
+    private gameStateService: GameStateService,
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
+  ) {
+    try {
+      this.noSleep = new NoSleep();
+    } catch (e) {
+      console.log(e);
+    }
+
     this.player.id = parseInt(window.localStorage.getItem('userId'), 10);
     this.route.data.subscribe((params: any) => {
       this.gameStateService.setGameState(params.gameState);
+      this.gameId = params.gameState.id;
+      console.log(params.gameState);
+      if (!params.gameState) {
+        console.log('ERROR SHOULD REDIRECT...');
+        // this.router.navigate(['/']);
+      }
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (!this.isValidUser()) {
+      console.log('ERROR SHOULD REDIRECT...2');
+      // this.router.navigate(['/']);
+    } else {
+      this.initIoConnection();
+      let message: Message;
+
+      message = {
+        from: this.player,
+        content: this.gameId,
+        messageType: MessageType.CONNECTED,
+        gameId: this.gameId
+      };
+
+      this.socketService.send(message);
+    }
+  }
 
   ngAfterViewInit() {
     console.log(this.handContainer);
     this.gameStateService.getGameState().subscribe((state: GameState) => {
       console.log(state);
+      if (!state['success']) {
+        this.router.navigate(['/']);
+        return;
+      }
       this.gameState = state;
       this.player = this.gameState.players.find((player: Player) => {
         return player.id === this.player.id;
@@ -58,6 +114,31 @@ export class PlayerComponent implements OnInit, AfterViewInit {
       this.handClickHandler(true);
       this.cdr.detectChanges();
     });
+  }
+
+  ngOnDestroy() {
+    try {
+      this.allowSleep(false);
+      this.socketService.close();
+    } catch (e) {
+      // There is no socket to close.
+    }
+  }
+
+  allowSleep(allow = false) {
+    try {
+      if (allow) {
+        this.noSleep.enable();
+      } else {
+        this.noSleep.disable();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  isValidUser(): boolean {
+    return Boolean(window.localStorage.getItem('userName') && window.localStorage.getItem('userId'));
   }
 
   handClickHandler(forceCompactHand?: boolean) {
@@ -176,5 +257,77 @@ export class PlayerComponent implements OnInit, AfterViewInit {
     });
 
     return bankBalance;
+  }
+
+  /* Socket Connections */
+
+  initIoConnection(): void {
+    this.socketService.initSocket(environment.gameUrl);
+
+    this.ioConnection = this.socketService.onMessage().subscribe((message: any) => {
+      console.log('Message being received is...');
+      console.log(message);
+      if (message) {
+        this.gameStateService.setGameState(message);
+      }
+      // if (
+      //   (message.action === MessageType.Ready && message.to === this.user.name) ||
+      //   (message.action === MessageType.Waiting &&
+      //     message.content.firstConnected === this.user.name)
+      // ) {
+      //   this.showReady = true;
+      //   this.showWaiting = false;
+      // } else if (message.action === MessageType.Waiting && !this.showReady) {
+      //   this.showReady = false;
+      //   this.showWaiting = true;
+      // } else if (
+      //   message.action === MessageType.Question ||
+      //   message.action === MessageType.Prompt
+      // ) {
+      //   this.showReady = false;
+      //   this.showWaiting = false;
+      // } else if (message.action === MessageType.Host) {
+      //   this.hostMessageHandler(message);
+      // }
+
+      // if (message.action && message.content) {
+      //   this.messageHandler(message);
+      // }
+      console.log(' ------ ');
+    });
+
+    this.socketService.onDisconnect().subscribe(status => {
+      this.disconnected = status.disconnected || false;
+    });
+
+    this.socketService.onReconnect().subscribe(status => {
+      if (this.disconnected && typeof status !== undefined && !status.disconnected) {
+        console.log('Internet connection reestablished, reconnecting to server...');
+        this.socketService.close();
+        window.location.reload();
+        this.disconnected = false;
+      }
+    });
+
+    this.socketService.onEvent(MessageType.CONNECTED).subscribe(() => {
+      console.log('connected');
+    });
+
+    this.socketService.onEvent(MessageType.DISCONNECTED).subscribe(() => {
+      console.log('disconnected');
+    });
+  }
+
+  sendMessage(messageType: MessageType): void {
+    let message: Message;
+
+    message = {
+      from: this.player,
+      content: {},
+      messageType,
+      gameId: this.gameId
+    };
+
+    this.socketService.send(message);
   }
 }

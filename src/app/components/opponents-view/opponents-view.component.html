@@ -8,7 +8,7 @@
       <button mat-stroked-button (click)="setLandToView(opponent.land); openDialog(landContainer)">View Land</button>
       <div class="opponent-land-container">
         <div *ngFor="let plot of opponent?.land" class="opponent-land-view">
-          <div *ngFor="let card of plot" class="property-bar card-bg-{{ card.property[0].color }}">
+          <div *ngFor="let card of plot" class="property-bar card-bg-{{ card.property ? card.property[0].color : 'house' }}">
             {{ card.name }}
           </div>
         </div>
