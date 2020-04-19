@@ -1,11 +1,21 @@
 .player-container {
   background: #fafafa;
   height: 100vh;
+  padding: 15px;
+  box-sizing: border-box;
 
   h4 {
     font-weight: 700;
     text-align: center;
     margin: 10px 0;
+  }
+}
+
+.player-actions-container {
+  .mat-form-field {
+    .mat-form-field-infix {
+      width: 245px;
+    }
   }
 }
 
@@ -17,6 +27,7 @@
 .land-container {
   width: 100%;
   overflow: auto;
+  margin-bottom: 270px;
 
   &-scroller {
     white-space: nowrap;

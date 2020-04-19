@@ -22,13 +22,14 @@ import { environment } from 'src/environments/environment';
 export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('handContainer') handContainer: ElementRef;
   @ViewChild('unassignedContainer') unassignedContainer: TemplateRef<any>;
+  @ViewChild('gameLogContainer') gameLogContainer: ElementRef;
   CardLocation = CardLocation;
   gameState: GameState;
   player: Player = {
     id: 0,
-    name: 'Kevin',
+    name: 'New User',
     hand: [],
-    land: [[], [], [], [], []],
+    land: [[]],
     bank: [],
     unAssigned: []
   };
@@ -46,6 +47,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   startingScore = 0;
   noSleep: any;
   disconnected = false;
+  gameLog = '';
 
   constructor(
     private socketService: SocketService,
@@ -61,52 +63,46 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(e);
     }
 
-    this.player.id = parseInt(window.localStorage.getItem('userId'), 10);
     this.route.data.subscribe((params: any) => {
       this.gameStateService.setGameState(params.gameState);
       this.gameId = params.gameState.id;
-      console.log(params.gameState);
       if (!params.gameState) {
-        console.log('ERROR SHOULD REDIRECT...');
-        // this.router.navigate(['/']);
+        this.router.navigate(['/']);
       }
     });
   }
 
   ngOnInit(): void {
-    if (!this.isValidUser()) {
-      console.log('ERROR SHOULD REDIRECT...2');
-      // this.router.navigate(['/']);
-    } else {
-      this.initIoConnection();
-      let message: Message;
+    this.initIoConnection();
+    let message: Message;
 
-      message = {
-        from: this.player,
-        content: this.gameId,
-        messageType: MessageType.CONNECTED,
-        gameId: this.gameId
-      };
+    message = {
+      from: this.player,
+      content: this.gameId,
+      messageType: MessageType.CONNECTED,
+      gameId: this.gameId
+    };
 
-      this.socketService.send(message);
-    }
+    this.gameLog = `Room Code: ${this.gameId}\n`;
+
+    this.socketService.send(message);
   }
 
   ngAfterViewInit() {
-    console.log(this.handContainer);
     this.gameStateService.getGameState().subscribe((state: GameState) => {
-      console.log(state);
       if (!state['success']) {
         this.router.navigate(['/']);
         return;
       }
+
       this.gameState = state;
+
+      const playerId = parseInt(window.localStorage.getItem('userId'), 10);
       this.player = this.gameState.players.find((player: Player) => {
-        return player.id === this.player.id;
+        return player.id === playerId;
       });
 
-      console.log(this.player);
-      if (this.player.unAssigned.length > 0) {
+      if (this.player?.unAssigned.length > 0) {
         this.openDialog(this.unassignedContainer);
       } else {
         this.dialog.closeAll();
@@ -125,6 +121,10 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  startNewGame() {
+    this.gameStateService.startNewGame();
+  }
+
   allowSleep(allow = false) {
     try {
       if (allow) {
@@ -135,10 +135,6 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     } catch (e) {
       console.log(e);
     }
-  }
-
-  isValidUser(): boolean {
-    return Boolean(window.localStorage.getItem('userName') && window.localStorage.getItem('userId'));
   }
 
   handClickHandler(forceCompactHand?: boolean) {
@@ -211,9 +207,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   compactHand() {
-    console.log(this.player?.hand.length > 0, this.handContainer.nativeElement.querySelector('.hand-container-scroller'));
     if (this.player?.hand.length > 0 && this.handContainer?.nativeElement.querySelector('.hand-container-scroller')) {
-      console.log(this.handContainer.nativeElement.querySelector('.hand-container-scroller').getBoundingClientRect().width);
       this.raisedCardIndex = -1;
 
       const handWidth = this.player.hand.length * 252;
@@ -270,34 +264,21 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
       if (message) {
         this.gameStateService.setGameState(message);
       }
-      // if (
-      //   (message.action === MessageType.Ready && message.to === this.user.name) ||
-      //   (message.action === MessageType.Waiting &&
-      //     message.content.firstConnected === this.user.name)
-      // ) {
-      //   this.showReady = true;
-      //   this.showWaiting = false;
-      // } else if (message.action === MessageType.Waiting && !this.showReady) {
-      //   this.showReady = false;
-      //   this.showWaiting = true;
-      // } else if (
-      //   message.action === MessageType.Question ||
-      //   message.action === MessageType.Prompt
-      // ) {
-      //   this.showReady = false;
-      //   this.showWaiting = false;
-      // } else if (message.action === MessageType.Host) {
-      //   this.hostMessageHandler(message);
-      // }
+      console.log(' ------ ');
+    });
 
-      // if (message.action && message.content) {
-      //   this.messageHandler(message);
-      // }
+    this.ioConnection = this.socketService.onPlayerAction().subscribe((message: any) => {
+      console.log('Message being received is...');
+      console.log(message);
+      if (message) {
+        this.gameLog += `${message}\n`;
+        this.gameLogContainer.nativeElement.scrollTo(0, 5000);
+      }
       console.log(' ------ ');
     });
 
     this.socketService.onDisconnect().subscribe(status => {
-      this.disconnected = status.disconnected || false;
+      this.disconnected = status ? status.disconnected : false;
     });
 
     this.socketService.onReconnect().subscribe(status => {

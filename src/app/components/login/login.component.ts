@@ -49,7 +49,6 @@ export class LoginComponent implements OnInit {
 
     this.httpClient.request('post', url, { body }).subscribe(
       (resp: any) => {
-        console.log(resp);
         if (resp.success) {
           window.localStorage.setItem('userName', this.name);
           window.localStorage.setItem('gameId', this.gameId);

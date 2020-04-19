@@ -6,6 +6,11 @@
     <button mat-stroked-button (click)="openDialog(bankContainer)">View Bank: ${{ bankBalance }}</button>
 
     <button mat-stroked-button (click)="viewTrash(trashContainer)">View Cards Played/Trashed</button>
+    <button mat-stroked-button (click)="startNewGame()">New Game</button>
+    <mat-form-field appearance="fill">
+      <mat-label>Game Log</mat-label>
+      <textarea matInput disabled="true" #gameLogContainer>{{ gameLog }}</textarea>
+    </mat-form-field>
   </div>
 
   <div class="opponents-container" *ngIf="player">

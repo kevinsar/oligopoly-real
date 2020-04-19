@@ -1,0 +1,26 @@
+.login-page {
+  .login-container {
+    width: 1440px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+    box-sizing: border-box;
+
+    .mat-form-field {
+      width: 100%;
+    }
+
+    button {
+      float: right;
+      margin: 10px 0;
+    }
+
+    h2.join {
+      margin-top: 50px;
+    }
+
+    small {
+      color: red;
+    }
+  }
+}

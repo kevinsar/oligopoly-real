@@ -1,22 +1,25 @@
 <div class="login-page">
   <div class="login-container">
+    <h1>Welcome to Oligopoly Real!</h1>
+    <h2>Create A New Game</h2>
     <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
+      <mat-label>Player Name</mat-label>
       <input matInput [(ngModel)]="name" type="text" placeholder="Player Name" />
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="submit()">Start a New Game</button>
 
+    <h2 class="join">Join an Existing Game</h2>
+    <p>Get the code from your friend and enter that into the room code.</p>
     <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
+      <mat-label>Player Name</mat-label>
       <input matInput [(ngModel)]="name" type="text" placeholder="Player Name" />
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <mat-label>Game Code</mat-label>
+      <mat-label>Room Code</mat-label>
       <input matInput [(ngModel)]="gameId" type="text" class="room-code" placeholder="Room Code" />
     </mat-form-field>
+    <small *ngIf="gameExistsError" class="error">This game code does not exist, please double check and try again.</small>
 
     <button mat-raised-button color="primary" (click)="submit()">Join Existing Game</button>
   </div>
 </div>
-
-<small *ngIf="gameExistsError" class="error">This game code does not exist, please double check and try again.</small>

@@ -25,10 +25,7 @@ export class OpponentsViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
-    // if (changes.gameState) {
     this.getOpponentStates();
-    // }
   }
 
   getOpponentStates() {

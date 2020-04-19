@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "rm -rf dist && ng build --aot --prod --configuration=production",
     "test": "ng test --code-coverage",
     "test:watch": "ng test --code-coverage --watch",
     "lint": "ng lint",

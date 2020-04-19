@@ -81,6 +81,29 @@ export class GameStateService {
     );
   }
 
+  startNewGame() {
+    this.gameId = this.gameId?.toUpperCase() || null;
+    const serverUrl = environment.gameUrl;
+    const url = `${serverUrl}/new-game`;
+
+    const body = {
+      gameId: this.gameId
+    };
+
+    this.http.request('post', url, { body }).subscribe(
+      (resp: any) => {
+        console.log(resp);
+        if (resp.success) {
+          this.gameState = resp;
+          this.gameStateSubject.next(this.gameState);
+        }
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
   addToBank(playerId: number, card: Card) {
     this.actionHandler(CardAction.BANK, { playerId, card });
   }
@@ -90,7 +113,7 @@ export class GameStateService {
   }
 
   addToPlayed(playerId: number, card: Card) {
-    this.addToTrash(playerId, card);
+    this.actionHandler(CardAction.PLAY, { playerId, card });
   }
 
   addToTrash(playerId: number, card: Card) {

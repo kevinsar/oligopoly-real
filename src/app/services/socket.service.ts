@@ -14,6 +14,8 @@ export class SocketService {
   socketMessage;
   socketSubject;
   socketData;
+  socketActionsSubject;
+  socketActionsObserver;
   disconnectSubject;
   disconnectData;
   reconnectSubject;
@@ -24,6 +26,9 @@ export class SocketService {
 
     this.socketSubject = new BehaviorSubject<Message>(null);
     this.socketData = this.socketSubject.asObservable();
+
+    this.socketActionsSubject = new BehaviorSubject<string>('');
+    this.socketActionsObserver = this.socketActionsSubject.asObservable();
 
     this.disconnectSubject = new BehaviorSubject<Message>({} as any);
     this.disconnectData = this.socketSubject.asObservable();
@@ -43,8 +48,11 @@ export class SocketService {
       console.log('socket is now connected!');
 
       this.socket.on('message', (message: Message) => {
-        console.log(message);
         this.socketSubject.next(message);
+      });
+
+      this.socket.on('action', (message: Message) => {
+        this.socketActionsSubject.next(message);
       });
     });
 
@@ -68,6 +76,10 @@ export class SocketService {
 
   onMessage(): Observable<Message> {
     return this.socketData;
+  }
+
+  onPlayerAction(): Observable<string> {
+    return this.socketActionsObserver;
   }
 
   onDisconnect(): Observable<any> {
