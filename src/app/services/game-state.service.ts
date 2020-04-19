@@ -54,6 +54,29 @@ export class GameStateService {
     return this.gameId;
   }
 
+  sendChat(player: Player, message: string) {
+    this.gameId = this.gameId?.toUpperCase() || null;
+    const serverUrl = environment.gameUrl;
+    const url = `${serverUrl}/chat`;
+
+    console.log(serverUrl);
+
+    const body = {
+      player,
+      message,
+      gameId: this.gameId
+    };
+
+    this.http.request('post', url, { body }).subscribe(
+      (resp: any) => {
+        console.log(resp);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
   actionHandler(action: CardAction, actionParams: any) {
     this.gameId = this.gameId?.toUpperCase() || null;
     const serverUrl = environment.gameUrl;

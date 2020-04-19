@@ -48,6 +48,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   noSleep: any;
   disconnected = false;
   gameLog = '';
+  chatMessage = '';
 
   constructor(
     private socketService: SocketService,
@@ -242,6 +243,16 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   payPlayerHandler(payEvent: { player: Player; cardLocation: CardLocation }, card: Card) {
     this.gameStateService.payPlayer(this.player.id, payEvent.player, card, payEvent.cardLocation);
+  }
+
+  endTurn() {
+    this.gameStateService.sendChat(this.player, 'has ended their turn.');
+    this.chatMessage = '';
+  }
+
+  sendChat() {
+    this.gameStateService.sendChat(this.player, this.chatMessage);
+    this.chatMessage = '';
   }
 
   get bankBalance() {

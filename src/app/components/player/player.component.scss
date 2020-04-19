@@ -17,6 +17,17 @@
       width: 245px;
     }
   }
+
+  .chat-box-container {
+    width: 270px;
+    border: 1px solid #ccc;
+    float: right;
+    padding: 15px;
+
+    textarea {
+      height: 80px;
+    }
+  }
 }
 
 .bank-cards-container {

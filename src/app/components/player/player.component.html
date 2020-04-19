@@ -6,11 +6,18 @@
     <button mat-stroked-button (click)="openDialog(bankContainer)">View Bank: ${{ bankBalance }}</button>
 
     <button mat-stroked-button (click)="viewTrash(trashContainer)">View Cards Played/Trashed</button>
+    <button mat-stroked-button (click)="endTurn()">End Turn</button>
     <button mat-stroked-button (click)="startNewGame()">New Game</button>
-    <mat-form-field appearance="fill">
-      <mat-label>Game Log</mat-label>
-      <textarea matInput disabled="true" #gameLogContainer>{{ gameLog }}</textarea>
-    </mat-form-field>
+    <div class="chat-box-container">
+      <mat-form-field appearance="fill">
+        <mat-label>Game Log</mat-label>
+        <textarea matInput readonly="true" #gameLogContainer>{{ gameLog }}</textarea>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Send Chat</mat-label>
+        <input matInput type="text" [(ngModel)]="chatMessage" placeholder="Send Chat" (keydown.enter)="sendChat()" />
+      </mat-form-field>
+    </div>
   </div>
 
   <div class="opponents-container" *ngIf="player">
@@ -60,9 +67,11 @@
   <ng-template #trashContainer>
     <div class="bank-container">
       <h4>Trash</h4>
-      <span class="bank" *ngFor="let card of gameState.trash">
-        <or-card [card]="card" [cardLocation]="CardLocation.BANK" (cardAction)="cardActionHandler(card, $event)"> </or-card>
-      </span>
+      <div class="bank-cards-container">
+        <span class="bank" *ngFor="let card of gameState.trash">
+          <or-card [card]="card" [cardLocation]="CardLocation.BANK" (cardAction)="cardActionHandler(card, $event)"> </or-card>
+        </span>
+      </div>
     </div>
   </ng-template>
 
