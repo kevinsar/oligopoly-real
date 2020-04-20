@@ -49,6 +49,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   disconnected = false;
   gameLog = '';
   chatMessage = '';
+  isConnectedToSocket = false;
 
   constructor(
     private socketService: SocketService,
@@ -73,21 +74,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.initIoConnection();
-    let message: Message;
-
-    message = {
-      from: this.player,
-      content: this.gameId,
-      messageType: MessageType.CONNECTED,
-      gameId: this.gameId
-    };
-
-    this.gameLog = `Room Code: ${this.gameId}\n`;
-
-    this.socketService.send(message);
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
     this.gameStateService.getGameState().subscribe((state: GameState) => {
@@ -102,6 +89,10 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.player = this.gameState.players.find((player: Player) => {
         return player.id === playerId;
       });
+
+      if (this.player && !this.isConnectedToSocket) {
+        this.connectToSocket();
+      }
 
       if (this.player?.unAssigned.length > 0) {
         this.openDialog(this.unassignedContainer);
@@ -124,6 +115,23 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   startNewGame() {
     this.gameStateService.startNewGame();
+  }
+
+  connectToSocket() {
+    this.isConnectedToSocket = true;
+    this.initIoConnection();
+    let message: Message;
+
+    message = {
+      from: this.player,
+      content: this.gameId,
+      messageType: MessageType.CONNECTED,
+      gameId: this.gameId
+    };
+
+    this.gameLog = `Room Code: ${this.gameId}\nEveryone Draw 5 to start.\nWhoever created the game goes first.\n`;
+
+    this.socketService.send(message);
   }
 
   allowSleep(allow = false) {
@@ -246,7 +254,19 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   endTurn() {
-    this.gameStateService.sendChat(this.player, 'has ended their turn.');
+    let message = 'has ended their turn.\n';
+
+    const currentPlayerIndex = this.gameState.players.findIndex((player: Player) => {
+      return this.player.id === player.id;
+    });
+
+    let nextPlayerIndex = 0;
+    if (currentPlayerIndex < this.gameState.players.length - 1) {
+      nextPlayerIndex = currentPlayerIndex + 1;
+    }
+
+    message += `It is now ${this.gameState.players[nextPlayerIndex].name}'s turn`;
+    this.gameStateService.sendChat(this.player, message);
     this.chatMessage = '';
   }
 
@@ -283,7 +303,10 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(message);
       if (message) {
         this.gameLog += `${message}\n`;
-        this.gameLogContainer.nativeElement.scrollTo(0, 5000);
+        const scrollHeight = this.gameLogContainer.nativeElement.scrollHeight;
+        window.setTimeout(() => {
+          this.gameLogContainer.nativeElement.scrollTo(0, scrollHeight > 5000 ? scrollHeight : 5000);
+        }, 100);
       }
       console.log(' ------ ');
     });
