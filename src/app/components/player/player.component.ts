@@ -129,8 +129,11 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
       gameId: this.gameId
     };
 
-    this.gameLog = `Room Code: ${this.gameId}\nEveryone Draw 5 to start.\nWhoever created the game goes first.\n`;
+    this.gameLog = `Room Code: ${this.gameId}\nWhoever created the game goes first.\n`;
 
+    window.setTimeout(() => {
+      this.handClickHandler(true);
+    }, 1000);
     this.socketService.send(message);
   }
 
