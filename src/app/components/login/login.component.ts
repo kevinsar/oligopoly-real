@@ -1,18 +1,14 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { GameStateService } from 'src/app/services/game-state.service';
-
-/** Error when invalid control is dirty, touched, or submitted. */
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+import { WindowService } from 'src/app/services/window.service';
+import { SpinnerService } from 'src/app/services/spinner.service';
+import { Observable } from 'rxjs';
+import { map, startWith, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'or-login',
@@ -25,54 +21,74 @@ export class LoginComponent implements OnInit {
   name = '';
   gameId = '';
   gameExistsError = false;
-  matcher = new MyErrorStateMatcher();
+  games: { name: string; gameId: string }[] = [];
 
-  constructor(private gameStateService: GameStateService, private router: Router, public httpClient: HttpClient) {}
+  gameIdControl = new FormControl();
+  filteredGameIds: Observable<{ gameId: string; name: string }[]>;
 
-  ngOnInit() {}
+  constructor(
+    private route: ActivatedRoute,
+    private spinnerService: SpinnerService,
+    private gameStateService: GameStateService,
+    private windowService: WindowService,
+    private router: Router,
+    public httpClient: HttpClient
+  ) {
+    this.route.data.subscribe((params: any) => {
+      this.spinnerService.hideSpinner();
+      this.games = params.games.games.sort();
+    });
+  }
+
+  ngOnInit() {
+    this.filteredGameIds = this.gameIdControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterGameIds(value))
+    );
+  }
 
   submit() {
-    window.localStorage.removeItem('userName');
-    window.localStorage.removeItem('gameId');
-    window.localStorage.removeItem('userId');
+    this.spinnerService.showSpinner();
+    this.windowService.removeItem('userName');
+    this.windowService.removeItem('gameId');
+    this.windowService.removeItem('userId');
 
     this.gameId = this.gameId?.toUpperCase() || null;
     const serverUrl = environment.gameUrl;
     const url = `${serverUrl}/client-login`;
-
-    console.log(serverUrl);
 
     const body = {
       name: this.name,
       gameId: this.gameId
     };
 
-    this.httpClient.request('post', url, { body }).subscribe(
+    this.httpClient.post(url, body).subscribe(
       (resp: any) => {
         if (resp.success) {
-          window.localStorage.setItem('userName', this.name);
-          window.localStorage.setItem('gameId', this.gameId);
-          window.localStorage.setItem('userId', resp.player.id);
+          this.windowService.setItem('userName', this.name);
+          this.windowService.setItem('gameId', this.gameId);
+          this.windowService.setItem('userId', resp.player.id);
           this.gameStateService.setGameId(this.gameId);
           this.router.navigate([resp.route]);
         } else {
           this.gameExistsError = true;
         }
+
+        this.spinnerService.hideSpinner();
       },
       error => {
         console.log(error);
         this.gameExistsError = true;
+        this.spinnerService.hideSpinner();
       }
     );
   }
 
-  getRandomId(): string {
-    return Math.floor(Math.random() * 1000000) + '';
-  }
-
-  roomCodeIsValid(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      return this.gameExistsError ? { roomCodeIsValid: { value: control.value } } : null;
-    };
+  filterGameIds(value: string): { gameId: string; name: string }[] {
+    const filterValue = value.toLowerCase().trim();
+    this.gameId = filterValue;
+    return this.games.filter((option: { gameId: string; name: string }) => {
+      return option.gameId.toLowerCase().includes(filterValue) || option.name.toLowerCase().includes(filterValue);
+    });
   }
 }

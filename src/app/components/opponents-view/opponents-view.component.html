@@ -1,7 +1,7 @@
 <div class="opponents-view-container">
   <div class="opponents-view-content" *ngIf="gameState && gameState.players">
-    <div *ngFor="let opponent of opponents" class="opponents-view-section">
-      <p class="opponent-name">{{ opponent.name }} - ({{ opponent.hand.length }} Cards In Hand)</p>
+    <div *ngFor="let opponent of opponents; let i = index" class="opponents-view-section opponents-view-section-{{ i }}">
+      <p class="opponent-name">{{ opponent.name }} - ({{ opponent.hand?.length }} Cards In Hand)</p>
       <button mat-stroked-button (click)="setBankToView(opponent.bank); openDialog(bankContainer)">
         View Bank: {{ getBankBalance(opponent.bank) }}
       </button>

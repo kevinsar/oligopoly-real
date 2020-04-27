@@ -14,22 +14,22 @@ export class OpponentsViewComponent implements OnInit, OnChanges {
   CardLocation = CardLocation;
   @Input() activePlayer: Player;
   @Input() gameState: GameState;
-  opponents: Player[];
+  opponents: Player[] = [];
   bankToView: Card[] = [];
   landToView: Card[][] = [];
 
   constructor(private dialog: MatDialog) {}
 
-  ngOnInit(): void {
-    this.getOpponentStates();
-  }
+  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    this.getOpponentStates();
+    if (changes.gameState) {
+      this.getOpponentStates();
+    }
   }
 
   getOpponentStates() {
-    this.opponents = this.gameState?.players.filter((player: Player) => {
+    this.opponents = (this.gameState?.players || []).filter((player: Player) => {
       return player.id !== this.activePlayer.id;
     });
   }

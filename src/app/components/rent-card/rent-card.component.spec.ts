@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RentCardComponent } from './rent-card.component';
+import { Color } from 'src/app/enums/color.enum';
 
 describe('RentCardComponent', () => {
   let component: RentCardComponent;
@@ -8,13 +9,15 @@ describe('RentCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RentCardComponent],
+      declarations: [RentCardComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RentCardComponent);
     component = fixture.componentInstance;
+
+    component.rentColors = [Color.RED, Color.YELLOW];
     fixture.detectChanges();
   });
 

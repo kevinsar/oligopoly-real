@@ -3,7 +3,6 @@ import { Card, Property } from '../models/card.model';
 import { Player } from '../models/player.model';
 import { GameState } from '../models/game-state.model';
 import { BehaviorSubject } from 'rxjs';
-import { mockGameState } from 'src/assets/mocks';
 import { CardLocation } from '../enums/card-location.enum';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -95,6 +94,7 @@ export class GameStateService {
         console.log(resp);
         if (resp.success) {
           this.gameState = resp;
+
           this.gameStateSubject.next(this.gameState);
         }
       },
@@ -178,5 +178,9 @@ export class GameStateService {
       return 1;
     });
     this.gameStateSubject.next(this.gameState);
+  }
+
+  getActiveGames() {
+    return this.http.get(`${environment.gameUrl}/get-active-games`);
   }
 }

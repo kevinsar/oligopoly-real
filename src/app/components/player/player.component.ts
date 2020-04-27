@@ -1,4 +1,16 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation, TemplateRef, ChangeDetectorRef, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  ViewEncapsulation,
+  TemplateRef,
+  ChangeDetectorRef,
+  AfterViewInit,
+  OnDestroy,
+  ViewChildren,
+  QueryList
+} from '@angular/core';
 import { Card, Property } from 'src/app/models/card.model';
 import { GameStateService } from 'src/app/services/game-state.service';
 import { GameState } from 'src/app/models/game-state.model';
@@ -12,6 +24,9 @@ import * as NoSleep from 'nosleep.js';
 import { MessageType } from 'src/app/enums/message-type.enum';
 import { Message } from 'src/app/models/message.model';
 import { environment } from 'src/environments/environment';
+import { WindowService } from 'src/app/services/window.service';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag } from '@angular/cdk/drag-drop';
+import { CardType } from 'src/app/enums/card-type.enum';
 
 @Component({
   selector: 'or-player',
@@ -19,20 +34,15 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PlayerComponent implements OnInit, OnDestroy {
   @ViewChild('handContainer') handContainer: ElementRef;
+  @ViewChild('handList') handList: ElementRef;
+  @ViewChildren('lotsList') lotsList: QueryList<ElementRef>;
   @ViewChild('unassignedContainer') unassignedContainer: TemplateRef<any>;
   @ViewChild('gameLogContainer') gameLogContainer: ElementRef;
   CardLocation = CardLocation;
   gameState: GameState;
-  player: Player = {
-    id: 0,
-    name: 'New User',
-    hand: [],
-    land: [[]],
-    bank: [],
-    unAssigned: []
-  };
+  player: Player;
   handCardOffset = 0;
   raisedCardIndex = -1;
   isHandSpread = false;
@@ -51,62 +61,45 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   chatMessage = '';
   isConnectedToSocket = false;
 
+  dropIds = {
+    lots: [],
+    opponents: [],
+    hand: [],
+    trash: [],
+    bank: []
+  };
+
   constructor(
     private socketService: SocketService,
     private router: Router,
     private gameStateService: GameStateService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private windowService: WindowService
   ) {
-    try {
-      this.noSleep = new NoSleep();
-    } catch (e) {
-      console.log(e);
-    }
-
     this.route.data.subscribe((params: any) => {
-      this.gameStateService.setGameState(params.gameState);
-      this.gameId = params.gameState.id;
-      if (!params.gameState) {
+      const playerId = this.player?.id || parseInt(this.windowService.getItem('userId'), 10);
+
+      if (!params.gameState || !playerId) {
         this.router.navigate(['/']);
+      } else {
+        this.gameStateService.setGameState(params.gameState);
+        this.gameId = params.gameState.id;
+        this.enableNoSleep(true);
       }
     });
   }
 
-  ngOnInit(): void {}
-
-  ngAfterViewInit() {
+  ngOnInit(): void {
     this.gameStateService.getGameState().subscribe((state: GameState) => {
-      if (!state['success']) {
-        this.router.navigate(['/']);
-        return;
-      }
-
-      this.gameState = state;
-
-      const playerId = parseInt(window.localStorage.getItem('userId'), 10);
-      this.player = this.gameState.players.find((player: Player) => {
-        return player.id === playerId;
-      });
-
-      if (this.player && !this.isConnectedToSocket) {
-        this.connectToSocket();
-      }
-
-      if (this.player?.unAssigned.length > 0) {
-        this.openDialog(this.unassignedContainer);
-      } else {
-        this.dialog.closeAll();
-      }
-      this.handClickHandler(true);
-      this.cdr.detectChanges();
+      this.setGameState(state);
     });
   }
 
   ngOnDestroy() {
     try {
-      this.allowSleep(false);
+      this.enableNoSleep(false);
       this.socketService.close();
     } catch (e) {
       // There is no socket to close.
@@ -117,36 +110,36 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gameStateService.startNewGame();
   }
 
-  connectToSocket() {
-    this.isConnectedToSocket = true;
-    this.initIoConnection();
-    let message: Message;
-
-    message = {
-      from: this.player,
-      content: this.gameId,
-      messageType: MessageType.CONNECTED,
-      gameId: this.gameId
-    };
-
-    this.gameLog = `Room Code: ${this.gameId}\nWhoever created the game goes first.\n`;
-
-    window.setTimeout(() => {
-      this.handClickHandler(true);
-    }, 1000);
-    this.socketService.send(message);
-  }
-
-  allowSleep(allow = false) {
-    try {
-      if (allow) {
-        this.noSleep.enable();
-      } else {
-        this.noSleep.disable();
-      }
-    } catch (e) {
-      console.log(e);
+  setGameState(state: GameState) {
+    if (!state['success']) {
+      this.router.navigate(['/']);
+      return;
     }
+
+    this.gameState = state;
+
+    const playerId = this.player?.id || parseInt(this.windowService.getItem('userId'), 10);
+
+    const newPlayerData = this.gameState.players.find((player: Player) => {
+      return player.id === playerId;
+    });
+
+    if (newPlayerData) {
+      this.player = newPlayerData;
+
+      if ((this.player.unAssigned || []).length > 0) {
+        this.dialog.closeAll();
+        this.openDialog(this.unassignedContainer);
+      }
+
+      if (!this.isConnectedToSocket) {
+        this.connectToSocket();
+      }
+    }
+
+    this.handClickHandler(true);
+    this.cdr.detectChanges();
+    this.getDropIds();
   }
 
   handClickHandler(forceCompactHand?: boolean) {
@@ -159,16 +152,8 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  drawTwoCards() {
-    this.handCardOffset = 0;
-    this.gameStateService.drawCards(this.player.id, 2);
-  }
-
-  drawFiveCards() {
-    this.handCardOffset = 0;
-    this.gameStateService.drawCards(this.player.id, 5);
-
-    this.handClickHandler(true);
+  drawCards(amount: number = 2) {
+    this.gameStateService.drawCards(this.player.id, amount);
   }
 
   cardActionHandler(card: Card, action: CardAction) {
@@ -182,10 +167,8 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
       case CardAction.TRASH:
         this.addToTrash(card);
         break;
-      case CardAction.PAY:
-        // code block
-        break;
       default:
+        break;
     }
 
     this.handClickHandler(true);
@@ -210,8 +193,6 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   sortWildCardProperty(card: Card, property: Property) {
     this.gameStateService.setWildCardColor(this.player.id, card, property);
   }
-
-  payPlayer() {}
 
   spreadHand() {
     this.raisedCardIndex = -1;
@@ -273,9 +254,16 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chatMessage = '';
   }
 
-  sendChat() {
-    this.gameStateService.sendChat(this.player, this.chatMessage);
-    this.chatMessage = '';
+  unAssignedLandHandler() {
+    if (this.player.unAssigned.length <= 1) {
+      this.dialog.closeAll();
+    }
+  }
+
+  bankPayHandler() {
+    if (this.player.bank.length <= 1) {
+      this.dialog.closeAll();
+    }
   }
 
   get bankBalance() {
@@ -288,14 +276,13 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /* Socket Connections */
-
   initIoConnection(): void {
     this.socketService.initSocket(environment.gameUrl);
 
     this.ioConnection = this.socketService.onMessage().subscribe((message: any) => {
-      console.log('Message being received is...');
-      console.log(message);
       if (message) {
+        console.log('Message being received is...');
+        console.log(message);
         this.gameStateService.setGameState(message);
       }
       console.log(' ------ ');
@@ -336,6 +323,11 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  sendChat() {
+    this.gameStateService.sendChat(this.player, this.chatMessage);
+    this.chatMessage = '';
+  }
+
   sendMessage(messageType: MessageType): void {
     let message: Message;
 
@@ -347,5 +339,85 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     this.socketService.send(message);
+  }
+
+  connectToSocket() {
+    this.isConnectedToSocket = true;
+    this.initIoConnection();
+    let message: Message;
+
+    message = {
+      from: this.player,
+      content: this.gameId,
+      messageType: MessageType.CONNECTED,
+      gameId: this.gameId
+    };
+
+    this.gameLog = `Room Code: ${this.gameId}\nWhoever created the game goes first.\n`;
+
+    window.setTimeout(() => {
+      this.handClickHandler(true);
+    }, 1000);
+    this.socketService.send(message);
+  }
+
+  /* Utiltities */
+
+  enableNoSleep(allow = false) {
+    if (!this.noSleep && allow) {
+      try {
+        this.noSleep = new NoSleep();
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    try {
+      if (this.noSleep) {
+        if (allow) {
+          this.noSleep.enable();
+        } else {
+          this.noSleep.disable();
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  getDropIds() {
+    this.lotsList.forEach((lot: ElementRef) => {
+      this.dropIds.lots.push(lot.nativeElement.getAttribute('id'));
+    });
+  }
+
+  /* Drop Handlers */
+  dropAnimator(dropEvent: CdkDragDrop<string[]>) {
+    if (dropEvent.previousContainer === dropEvent.container) {
+      moveItemInArray(dropEvent.container.data, dropEvent.previousIndex, dropEvent.currentIndex);
+    } else {
+      transferArrayItem(dropEvent.previousContainer.data, dropEvent.container.data, dropEvent.previousIndex, dropEvent.currentIndex);
+    }
+  }
+
+  dropIntoLand(dropEvent: CdkDragDrop<string[]>, lotNumber: number) {
+    this.dropAnimator(dropEvent);
+
+    if (dropEvent.item.data?.card) {
+      this.buildLand(dropEvent.item.data.card, lotNumber);
+    }
+  }
+
+  isLandOrHouse(item: CdkDrag<number>) {
+    let card: Card;
+    if (item && item.data && item.data['card']) {
+      card = item.data['card'];
+    }
+
+    return (
+      card &&
+      (item.data['location'] === CardLocation.LAND || item.data['location'] === CardLocation.HAND) &&
+      (card.type === CardType.WILD || card.type === CardType.PROPERTY || card.name === 'House' || card.name === 'Hotel')
+    );
   }
 }

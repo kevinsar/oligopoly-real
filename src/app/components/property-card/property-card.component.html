@@ -6,7 +6,7 @@
   </div>
 
   <div class="property-rent-container">
-    <ul>
+    <ul *ngIf="properties[0]">
       <li *ngFor="let rent of properties[0].rents; let i = index">{{ i + 1 }} Property = ${{ rent }} Rent</li>
     </ul>
   </div>

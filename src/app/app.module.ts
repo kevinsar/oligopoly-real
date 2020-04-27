@@ -16,8 +16,9 @@ import { CardComponent } from './components/card/card.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { OpponentsViewComponent } from './components/opponents-view/opponents-view.component';
 import { LoginComponent } from './components/login/login.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -32,9 +33,10 @@ import { HttpClientModule } from '@angular/common/http';
     CardComponent,
     ClickOutsideDirective,
     OpponentsViewComponent,
-    LoginComponent
+    LoginComponent,
+    SpinnerComponent
   ],
-  imports: [BrowserModule, HttpClientModule, FormsModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
+  imports: [BrowserModule, ReactiveFormsModule, HttpClientModule, FormsModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule],
   providers: [],
   bootstrap: [AppComponent]
 })

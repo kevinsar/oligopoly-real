@@ -8,8 +8,20 @@
     text-align: center;
     border: 1px solid black;
     padding: 5px;
-    max-width: 25%;
+    width: 25%;
     background: #c6e679;
+
+    &-0 {
+      width: calc(100% - 350px);
+    }
+
+    &-1 {
+      width: calc((100% - 360px) / 2);
+    }
+
+    &-2 {
+      width: calc((100% - 400px) / 3);
+    }
 
     .opponent-name {
       font-weight: 700;

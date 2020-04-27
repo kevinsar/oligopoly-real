@@ -1,6 +1,8 @@
 @import '../../../assets/styles/colors';
 
 .wild-card-container {
+  text-transform: capitalize;
+
   .property-title-container-rainbow {
     background: linear-gradient(
       to right,

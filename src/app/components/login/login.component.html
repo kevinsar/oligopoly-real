@@ -1,7 +1,7 @@
 <div class="login-page">
   <div class="login-container">
     <h1>Welcome to Oligopoly Real!</h1>
-    <h2>Create A New Game</h2>
+    <h2>Choose Your Name to Play!</h2>
     <mat-form-field appearance="fill">
       <mat-label>Player Name</mat-label>
       <input matInput [(ngModel)]="name" (keydown.enter)="submit()" type="text" placeholder="Player Name" />
@@ -12,11 +12,23 @@
     <p>Get the code from your friend and enter that into the room code.</p>
     <mat-form-field appearance="fill">
       <mat-label>Player Name</mat-label>
-      <input matInput [(ngModel)]="name" type="text" placeholder="Player Name" />
+      <input matInput [(ngModel)]="name" type="text" (keydown.enter)="submit()" placeholder="Player Name" />
     </mat-form-field>
+
     <mat-form-field appearance="fill">
-      <mat-label>Room Code</mat-label>
-      <input matInput [(ngModel)]="gameId" (keydown.enter)="submit()" type="text" class="room-code" placeholder="Room Code" />
+      <mat-label>Room Code {{ gameId }}</mat-label>
+      <input
+        type="text"
+        placeholder="Room Code"
+        aria-label="Number"
+        matInput
+        (keydown.enter)="submit()"
+        [formControl]="gameIdControl"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let game of filteredGameIds | async" [value]="game.gameId"> {{ game.name }} - {{ game.gameId }} </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
     <small *ngIf="gameExistsError" class="error">This game code does not exist, please double check and try again.</small>
 
