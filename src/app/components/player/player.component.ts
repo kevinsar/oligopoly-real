@@ -34,7 +34,7 @@ import { CardType } from 'src/app/enums/card-type.enum';
   styleUrls: ['./player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlayerComponent implements OnInit, OnDestroy {
+export class PlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('handContainer') handContainer: ElementRef;
   @ViewChild('handList') handList: ElementRef;
   @ViewChildren('lotsList') lotsList: QueryList<ElementRef>;
@@ -97,6 +97,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    if ((this.player.unAssigned || []).length > 0 && this.unassignedContainer) {
+      this.dialog.closeAll();
+      this.openDialog(this.unassignedContainer);
+    }
+  }
+
   ngOnDestroy() {
     try {
       this.enableNoSleep(false);
@@ -127,7 +134,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     if (newPlayerData) {
       this.player = newPlayerData;
 
-      if ((this.player.unAssigned || []).length > 0) {
+      if ((this.player.unAssigned || []).length > 0 && this.unassignedContainer) {
         this.dialog.closeAll();
         this.openDialog(this.unassignedContainer);
       }
