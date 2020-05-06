@@ -27,6 +27,7 @@ import { environment } from 'src/environments/environment';
 import { WindowService } from 'src/app/services/window.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag } from '@angular/cdk/drag-drop';
 import { CardType } from 'src/app/enums/card-type.enum';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'or-player',
@@ -76,7 +77,8 @@ export class PlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private windowService: WindowService
+    private windowService: WindowService,
+    private snackBar: MatSnackBar
   ) {
     this.route.data.subscribe((params: any) => {
       const playerId = this.player?.id || parseInt(this.windowService.getItem('userId'), 10);
@@ -179,6 +181,10 @@ export class PlayerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.handClickHandler(true);
+  }
+
+  playAgainstHandler(card: Card, playEvent: { player: Player; cardAction: CardAction }) {
+    this.gameStateService.addToPlayed(this.player.id, card, playEvent.player);
   }
 
   buildLand(card: Card, lot?: number) {
@@ -286,18 +292,22 @@ export class PlayerComponent implements OnInit, OnDestroy, AfterViewInit {
   initIoConnection(): void {
     this.socketService.initSocket(environment.gameUrl);
 
-    this.ioConnection = this.socketService.onMessage().subscribe((message: any) => {
+    this.socketService.onMessage().subscribe((message: any) => {
       if (message) {
-        console.log('Message being received is...');
-        console.log(message);
         this.gameStateService.setGameState(message);
       }
-      console.log(' ------ ');
     });
 
-    this.ioConnection = this.socketService.onPlayerAction().subscribe((message: any) => {
-      console.log('Message being received is...');
-      console.log(message);
+    this.socketService.onNotificationAction().subscribe((message: { userId: number | string; message: string }) => {
+      const ownMessage = message?.message?.split(' ')[0] === this.player.name;
+      if ((message.userId === 'all' || message.userId === this.player.id) && !ownMessage && message.message) {
+        this.snackBar.open(message.message, 'Close', {
+          duration: 5000
+        });
+      }
+    });
+
+    this.socketService.onPlayerAction().subscribe((message: any) => {
       if (message) {
         this.gameLog += `${message}\n`;
         const scrollHeight = this.gameLogContainer.nativeElement.scrollHeight;
@@ -305,7 +315,6 @@ export class PlayerComponent implements OnInit, OnDestroy, AfterViewInit {
           this.gameLogContainer.nativeElement.scrollTo(0, scrollHeight > 5000 ? scrollHeight : 5000);
         }, 100);
       }
-      console.log(' ------ ');
     });
 
     this.socketService.onDisconnect().subscribe(status => {
@@ -360,7 +369,7 @@ export class PlayerComponent implements OnInit, OnDestroy, AfterViewInit {
       gameId: this.gameId
     };
 
-    this.gameLog = `Room Code: ${this.gameId}\nWhoever created the game goes first.\n`;
+    this.gameLog = `Whoever created the game goes first.\nUse Chat Box to communicate moves!\n`;
 
     window.setTimeout(() => {
       this.handClickHandler(true);

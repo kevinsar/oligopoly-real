@@ -16,6 +16,13 @@ export class SocketService {
   socketData;
   socketActionsSubject;
   socketActionsObserver;
+
+  socketSnackbarSubject: BehaviorSubject<{ userId: string; message: string }> = new BehaviorSubject<{ userId: string; message: string }>({
+    userId: null,
+    message: null
+  });
+  socketSnackbarObserver: Observable<{ userId: string; message: string }> = this.socketSnackbarSubject.asObservable();
+
   disconnectSubject;
   disconnectData;
   reconnectSubject;
@@ -46,6 +53,10 @@ export class SocketService {
 
     this.socket.on('connect', (data: Message) => {
       console.log('socket is now connected!');
+
+      this.socket.on('snackbar', (message: { userId: string; message: string }) => {
+        this.socketSnackbarSubject.next(message);
+      });
 
       this.socket.on('message', (message: Message) => {
         this.socketSubject.next(message);
@@ -80,6 +91,10 @@ export class SocketService {
 
   onPlayerAction(): Observable<string> {
     return this.socketActionsObserver;
+  }
+
+  onNotificationAction(): Observable<{ userId: string; message: string }> {
+    return this.socketSnackbarObserver;
   }
 
   onDisconnect(): Observable<any> {

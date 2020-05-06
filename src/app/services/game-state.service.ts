@@ -76,12 +76,16 @@ export class GameStateService {
     );
   }
 
-  actionHandler(action: CardAction, actionParams: any) {
+  actionHandler(action: CardAction, actionParams: any, opponent?: Player) {
     this.gameId = this.gameId?.toUpperCase() || null;
     const serverUrl = environment.gameUrl;
     const url = `${serverUrl}/player-action`;
 
     console.log(serverUrl);
+
+    if (opponent) {
+      actionParams.opponent = opponent;
+    }
 
     const body = {
       action,
@@ -135,8 +139,8 @@ export class GameStateService {
     this.actionHandler(CardAction.PAY, { playerId, playerToPay, card, cardLocation });
   }
 
-  addToPlayed(playerId: number, card: Card) {
-    this.actionHandler(CardAction.PLAY, { playerId, card });
+  addToPlayed(playerId: number, card: Card, opponent?: Player) {
+    this.actionHandler(CardAction.PLAY, { playerId, card }, opponent);
   }
 
   addToTrash(playerId: number, card: Card) {

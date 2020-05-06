@@ -1,15 +1,14 @@
 <mat-menu #appMenu="matMenu">
+  <button [matMenuTriggerFor]="colorsMenu" mat-menu-item *ngIf="cardType === 'wild'">Set Wild Card Color</button>
   <button [matMenuTriggerFor]="lotMenu" mat-menu-item *ngIf="canAddToProperty">Add to Land</button>
-  <button
-    (click)="actionHandler(CardAction.PLAY)"
-    mat-menu-item
-    *ngIf="cardLocation === 'hand' && (cardType === CardType.RENT || cardType === CardType.ACTION)"
-  >
+  <button *ngIf="isBasicPlayable" (click)="actionHandler(CardAction.PLAY)" mat-menu-item>
     Play Card
+  </button>
+  <button [matMenuTriggerFor]="playAgainstMenu" mat-menu-item *ngIf="isAdvancedPlayable">
+    Play Card Against
   </button>
   <button (click)="actionHandler(CardAction.BANK)" mat-menu-item *ngIf="cardLocation === 'hand'">Add to Bank</button>
   <button [matMenuTriggerFor]="payableMenu" mat-menu-item *ngIf="cardLocation === 'land' || cardLocation === 'bank'">Use to Pay</button>
-  <button [matMenuTriggerFor]="colorsMenu" mat-menu-item *ngIf="cardType === 'wild'">Set Color</button>
   <button [matMenuTriggerFor]="lotMenu" mat-menu-item *ngIf="cardLocation === 'land'">Move Property</button>
   <button (click)="actionHandler(CardAction.TRASH)" mat-menu-item *ngIf="cardLocation === 'hand'">Throw Away</button>
 </mat-menu>
@@ -24,6 +23,10 @@
 
 <mat-menu #payableMenu="matMenu">
   <button *ngFor="let player of payablePlayers" mat-menu-item (click)="payPlayerHandler(player, cardLocation)">{{ player.name }}</button>
+</mat-menu>
+
+<mat-menu #playAgainstMenu="matMenu">
+  <button *ngFor="let player of payablePlayers" mat-menu-item (click)="playAgainstHandler(player)">{{ player.name }}</button>
 </mat-menu>
 
 <button class="action-button" [class.white]="setWhite" mat-icon-button [matMenuTriggerFor]="appMenu">

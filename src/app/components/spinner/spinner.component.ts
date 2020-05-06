@@ -7,6 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SpinnerComponent implements OnInit {
   @Input() showSpinner: boolean;
+  @Input() message: string;
   constructor() {}
 
   ngOnInit(): void {}

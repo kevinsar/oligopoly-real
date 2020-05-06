@@ -4,7 +4,6 @@ import { CardLocation } from 'src/app/enums/card-location.enum';
 import { CardAction } from 'src/app/enums/card-action.enum';
 import { Property, Card } from 'src/app/models/card.model';
 import { Color } from 'src/app/enums/color.enum';
-import { GameState } from 'src/app/models/game-state.model';
 import { Player } from 'src/app/models/player.model';
 
 @Component({
@@ -15,20 +14,20 @@ import { Player } from 'src/app/models/player.model';
 export class CardActionsComponent implements OnInit, OnChanges {
   @Input() players: Player[];
   @Input() activePlayer: Player;
-
-  @Input() cardType: CardType;
+  @Input() card: Card;
   @Input() cardLocation: CardLocation;
-  @Input() isHouse: boolean;
   @Input() fullSetExists = true;
-  @Input() properties: Property[] = [];
   @Input() lots: Card[][] = [];
   @Output() cardAction: EventEmitter<CardAction> = new EventEmitter<CardAction>();
+  @Output() playAgainst: EventEmitter<{ player: Player; cardAction: CardAction }> = new EventEmitter<{ player: Player; cardAction: CardAction }>();
   @Output() setColor: EventEmitter<Property> = new EventEmitter<Property>();
   @Output() setProperty: EventEmitter<number> = new EventEmitter<number>();
   @Output() payPlayer: EventEmitter<{ player: Player; cardLocation: CardLocation }> = new EventEmitter<{
     player: Player;
     cardLocation: CardLocation;
   }>();
+  cardType: CardType;
+  properties: Property[] = [];
   CardType = CardType;
   CardAction = CardAction;
   lotsMenu: any[] = new Array(5);
@@ -36,7 +35,10 @@ export class CardActionsComponent implements OnInit, OnChanges {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.cardType = this.card.type;
+    this.properties = this.card.property;
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.lots) {
@@ -67,6 +69,10 @@ export class CardActionsComponent implements OnInit, OnChanges {
     this.payPlayer.emit({ player, cardLocation });
   }
 
+  playAgainstHandler(player: Player) {
+    this.playAgainst.emit({ player, cardAction: CardAction.PLAY });
+  }
+
   get setWhite() {
     return this.properties && this.properties[0] && (this.properties[0].color === Color.BLACK || this.properties.length > 2);
   }
@@ -80,5 +86,22 @@ export class CardActionsComponent implements OnInit, OnChanges {
 
   get canChangeColor() {
     return this.cardType === CardType.PROPERTY || this.cardType === CardType.WILD;
+  }
+
+  get isHouse() {
+    return this.card.type === 'action' && (this.card.name === 'House' || this.card.name === 'Hotel');
+  }
+
+  get isBasicPlayable() {
+    return this.cardLocation === 'hand' && (this.cardType === CardType.RENT || this.cardType === CardType.ACTION) && !this.isAdvancedPlayable;
+  }
+
+  get isAdvancedPlayable() {
+    const advancedActionCardNames = ['Sly Deal', 'Deal Breaker', 'Forced Deal', 'Debt Collector'];
+    const isAdvancedActionCard = advancedActionCardNames.find((name: string) => {
+      return name === this.card.name;
+    });
+    const isRainbowRent = this.card.type === CardType.RENT && this.card.rentColors.length > 2;
+    return isAdvancedActionCard || isRainbowRent;
   }
 }

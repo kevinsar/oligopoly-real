@@ -17,6 +17,7 @@ export class CardComponent implements OnInit {
   @Input() cardLocation: CardLocation = CardLocation.TRASH;
   @Input() lotsAvailable: Card[][] = [];
 
+  @Output() playAgainst: EventEmitter<{ player: Player; cardAction: CardAction }> = new EventEmitter<{ player: Player; cardAction: CardAction }>();
   @Output() updatePropertyOrder: EventEmitter<Property> = new EventEmitter<Property>();
   @Output() cardAction: EventEmitter<CardAction> = new EventEmitter<CardAction>();
   @Output() setProperty: EventEmitter<number> = new EventEmitter<number>();
@@ -43,5 +44,9 @@ export class CardComponent implements OnInit {
 
   payPlayerHandler(payEvent: { player: Player; cardLocation: CardLocation }) {
     this.payPlayer.emit(payEvent);
+  }
+
+  playAgainstHandler(playEvent: { player: Player; cardAction: CardAction }) {
+    this.playAgainst.emit(playEvent);
   }
 }

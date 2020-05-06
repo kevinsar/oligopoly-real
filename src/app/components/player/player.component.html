@@ -8,6 +8,7 @@
     <button mat-stroked-button (click)="endTurn()">End Turn</button>
     <button mat-stroked-button (click)="startNewGame()">New Game</button>
     <div class="chat-box-container">
+      <p><strong>Room Code:</strong> {{ gameId }}</p>
       <mat-form-field appearance="fill">
         <mat-label>Game Log</mat-label>
         <textarea matInput readonly="true" #gameLogContainer>{{ gameLog }}</textarea>
@@ -101,6 +102,9 @@
           [card]="card"
           [cardLocation]="CardLocation.HAND"
           [lotsAvailable]="player.land"
+          [players]="gameState?.players"
+          [activePlayer]="player"
+          (playAgainst)="playAgainstHandler(card, $event)"
           (cardAction)="cardActionHandler(card, $event)"
           (setProperty)="buildLand(card, $event)"
           (updatePropertyOrder)="sortWildCardProperty(card, $event)"

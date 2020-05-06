@@ -1,14 +1,13 @@
 <div *ngIf="card" class="card-container">
   <or-card-actions
     *ngIf="cardLocation !== 'opponent'"
+    [card]="card"
     [players]="players"
     [activePlayer]="activePlayer"
-    [isHouse]="card.type === 'action' && (card.name === 'House' || card.name === 'Hotel')"
-    [cardType]="card.type"
     [cardLocation]="cardLocation"
-    [properties]="card.property"
     [lots]="lotsAvailable"
     (setProperty)="setPropertyHandler($event)"
+    (playAgainst)="playAgainstHandler($event)"
     (cardAction)="emitCardAction($event)"
     (setColor)="setPrimaryProperty($event)"
     (payPlayer)="payPlayerHandler($event)"
