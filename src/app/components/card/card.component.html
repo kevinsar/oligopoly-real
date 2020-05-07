@@ -1,6 +1,6 @@
 <div *ngIf="card" class="card-container">
   <or-card-actions
-    *ngIf="cardLocation !== 'opponent'"
+    *ngIf="cardLocation !== 'opponent' && cardLocation !== 'trash'"
     [card]="card"
     [players]="players"
     [activePlayer]="activePlayer"

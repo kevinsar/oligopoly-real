@@ -1,5 +1,7 @@
 <mat-menu #appMenu="matMenu">
-  <button [matMenuTriggerFor]="colorsMenu" mat-menu-item *ngIf="cardType === 'wild'">Set Wild Card Color</button>
+  <button [matMenuTriggerFor]="colorsMenu" mat-menu-item *ngIf="cardType === 'wild' && (cardLocation === 'land' || cardLocation === 'hand')">
+    Set Wild Card Color
+  </button>
   <button [matMenuTriggerFor]="lotMenu" mat-menu-item *ngIf="canAddToProperty">Add to Land</button>
   <button *ngIf="isBasicPlayable" (click)="actionHandler(CardAction.PLAY)" mat-menu-item>
     Play Card
